@@ -1,0 +1,15 @@
+{
+  "name": "@lxcid/intentloop-plugin",
+  "version": "0.0.0",
+  "private": true,
+  "description": "AI-native SDLC loop as committed artifacts, for coding agents. Opinionated setup, minimal and optional.",
+  "repository": "github:lxcid/intentloop-plugin",
+  "scripts": {
+    "format": "oxfmt",
+    "format:check": "oxfmt --check"
+  },
+  "devDependencies": {
+    "oxfmt": "0.66.0"
+  },
+  "packageManager": "pnpm@12.3.4"
+}

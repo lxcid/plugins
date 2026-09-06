@@ -1,0 +1,10 @@
+$schema: "https://moonrepo.dev/schemas/workspace.json"
+
+# One project for now: the repo root. Add globs (e.g. 'packages/*')
+# when the plugin and the check CLI become their own packages.
+projects:
+  root: "."
+
+vcs:
+  defaultBranch: "main"
+  provider: "github"

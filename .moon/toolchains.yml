@@ -1,0 +1,12 @@
+# Tool versions come from .prototools so proto and moon agree.
+javascript:
+  packageManager: "pnpm"
+  dedupeOnLockfileChange: true
+  inferTasksFromScripts: false
+  syncProjectWorkspaceDependencies: true
+
+node:
+  versionFromPrototools: true
+
+pnpm:
+  versionFromPrototools: true
