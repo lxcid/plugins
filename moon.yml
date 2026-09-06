@@ -1,0 +1,25 @@
+$schema: "https://moonrepo.dev/schemas/project.json"
+
+language: "javascript"
+layer: "configuration"
+
+# Both tasks hand the whole repo to oxfmt, which formats every file type it
+# understands: Markdown (docs/**/*.md, intent artifacts with frontmatter,
+# README), YAML, JSON, TOML, and code. .gitignore rules and the lockfile are
+# skipped by oxfmt itself; .oxfmtrc.json holds any further exclusions.
+tasks:
+  format:
+    description: "Format the repo with oxfmt, Markdown docs included (writes files)"
+    command: "oxfmt"
+    inputs: ["**/*"]
+    options:
+      cache: false
+      runInCI: false
+
+  format-check:
+    description: "Check formatting with oxfmt, Markdown docs included"
+    command: "oxfmt"
+    args: ["--check"]
+    inputs: ["**/*"]
+    options:
+      runInCI: true
