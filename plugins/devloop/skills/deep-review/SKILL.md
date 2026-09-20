@@ -48,6 +48,7 @@ Also check:
 - half-finished renames or old and new shapes coexisting
 - state that is stored when it could be derived, or cached with no clear authoritative source
 - unclear state ownership or unnecessary synchronization between duplicated state
+- whether changing caching or scheduling policy would require changing domain rules, and whether that dependency is required
 - data shapes or transitions that allow invalid or contradictory states
 - duplicated validation, state, error handling, or abstractions
 - tests that mock away the behavior they claim to protect

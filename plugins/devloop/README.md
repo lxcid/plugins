@@ -2,7 +2,7 @@
 
 Devloop aims to adapt [Anthropic's AI-native SDLC playbook](https://claude.com/blog/the-ai-native-sdlc-playbook) to its own workflow, with committed intent, specification, and planning artifacts over time. Today, its skills focus on GitHub and honor each project's conventions.
 
-Shared plugin package for Claude Code and Codex. Version `0.2.0` includes `start-work` and `deep-review`; intent stage automation, hooks, and agents are not implemented yet.
+Shared plugin package for Claude Code and Codex. Version `0.3.0` includes `start-work`, `deep-review`, and `adopt`; intent stage automation, hooks, and agents are not implemented yet.
 
 ## Start work
 
@@ -29,6 +29,19 @@ If the target is missing or ambiguous, the skill first asks whether to continue 
 Run in a Git checkout. GitHub PR lookup and diff retrieval use the GitHub CLI (`gh`) and require authentication with access to the repository. Explicit paths and commit ranges can be reviewed directly without GitHub PR discovery.
 
 The skill adapts the original personal `deep-review` instructions for a shared package. It does not require devloop intent artifacts or a separate reviewer agent.
+
+## Adopt patterns
+
+The [adopt skill](skills/adopt/SKILL.md) installs devloop's engineering patterns into a project's `AGENTS.md` and keeps them current when re-run. Each pattern is a stance rather than a repository fact, so it transfers as written and needs no knowledge of the target project.
+
+- Claude Code: `/devloop:adopt design-judgment`, `/devloop:adopt all`, or `/devloop:adopt` to choose from the catalog.
+- Codex: ask “Use devloop's adopt skill to install the design-judgment pattern.”
+
+The catalog is `design-judgment`, `debugging-discipline`, `test-design`, `writing-style`, `commit-conventions`, and `handoff-contract`. Each lives in its own file under [skills/adopt/references/](skills/adopt/references/): the frontmatter holds its id and version, and everything below the frontmatter is the exact text installed into `AGENTS.md`. Edit a reference file to change what a pattern says, and raise its `version` so existing adopters pick up the change.
+
+Installed sections are delimited by HTML comment markers recording the pattern's version and a hash of the upstream text the section was written from. That hash is a baseline rather than a checksum of whatever is currently there: a body still matching it is untouched plugin content and can be replaced, and anything else is yours — whether you merged it in when adopting or edited it afterwards. On re-run an untouched section on an older version updates in place, a customized one stops and asks first, and a current one is left alone. Nothing outside the markers is modified, and the skill never reformats the file around them.
+
+Run in the target project's Git checkout. No GitHub access is required.
 
 ## Package layout
 
