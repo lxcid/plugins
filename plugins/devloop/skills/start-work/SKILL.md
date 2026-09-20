@@ -112,7 +112,7 @@ Protect existing work:
 1. If the worktree is dirty, identify whether the changes are yours and whether they overlap the planned files.
 2. If dirty changes are unrelated, avoid touching them.
 3. If dirty changes overlap and you did not make them, ask how to proceed.
-4. Before branching from a different base, check for task work not incorporated into that base, whether pushed or unpushed, including branches without an upstream. Treat that work as user-owned and resolve how to carry it forward before switching; a clean status or being up to date with upstream does not establish that the work was integrated.
+4. Before branching from a different base, check for task work not incorporated into that base, whether pushed or unpushed, including branches without an upstream. Account for squash/rebase merges using PR history and content evidence rather than ancestry alone. If work remains or integration is unclear, treat it as user-owned and ask how to carry it forward before switching. A clean status or being up to date with upstream does not establish that the work was integrated.
 
 Derive a branch slug:
 
@@ -138,7 +138,15 @@ For new work that needs a branch, choose the working base:
 
 Resolve the repository's default branch from `gh repo view --json defaultBranchRef --jq .defaultBranchRef.name` or a verified remote HEAD; do not assume it is named `main`. Use an explicit user-selected base when provided, otherwise use the default branch. Substitute that selection for `<base>` in the examples below. The examples assume the target remote is `origin`; substitute the appropriate remote when needed.
 
-1. Prefer working in the primary checkout when it is clean and any open PR or in-progress work there belongs to this task.
+Before creating or switching branches, fetch the selected base and inspect candidate unmerged work. These commands show ancestry differences; apply the existing-work checks above to determine what remains unintegrated.
+
+```bash
+git fetch origin <base>
+git branch --no-merged origin/<base>
+git log --oneline origin/<base>..HEAD
+```
+
+1. Prefer working in the primary checkout when it is clean and no open PR or in-progress work there belongs to a different task.
 2. On the default branch: fetch the latest base, then create a new branch from `origin/<base>` with the chosen `<prefix>/<slug>`.
 3. On another branch: look for an associated PR.
 
@@ -148,7 +156,7 @@ gh pr list --head "$(git branch --show-current)" --state open --json number,titl
 
 Only if the open-PR lookup succeeds with no results, look for closed or merged PRs using the same command with `--state closed`. A lookup error leaves the PR status unknown. Resolve the lookup failure or ask the user before deciding whether to reuse or replace the branch. If the PR title and session context do not establish whether it belongs to this task, inspect the PR description and linked issues or ask the user.
 
-If an open PR or unfinished work on the branch belongs to a different task, ask whether to continue there or start separately. If the branch has only closed or merged PRs, or was itself already merged, check for local changes and task work not incorporated into the selected base, whether pushed or unpushed. Account for squash/rebase merges using PR history and content evidence rather than ancestry alone. If work remains or integration is unclear, ask how to carry it forward before switching. Then create a new branch from the latest selected base in the current checkout, preserving the agreed work; do not discard it or continue on the merged branch. For new work, default to a new branch in the primary checkout when it is available; consider a worktree when the primary checkout is already occupied. If there is no PR and the branch has user work, ask before repurposing it.
+If an open PR or unfinished work on the branch belongs to a different task, ask whether to continue there or start separately. If the branch has only closed or merged PRs, or was itself already merged, apply the existing-work checks above, including squash/rebase integration evidence, before switching. Then create a new branch from the latest selected base in the current checkout, preserving the agreed work; do not discard it or continue on the merged branch. For new work, default to a new branch in the primary checkout when it is available; consider a worktree when the primary checkout is already occupied. If there is no PR and the branch has user work, ask before repurposing it.
 
 When asking how to continue, offer concrete choices that fit the current state:
 

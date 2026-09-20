@@ -1,6 +1,6 @@
 # devloop
 
-Devloop aims to adapt an AI-native development lifecycle built around committed intent, specification, and planning artifacts over time. Today, its skills focus on GitHub and honor each project's conventions: `start-work` defaults to the PR description for planning and uses a designated planning artifact when the project provides one.
+Devloop aims to adapt [Anthropic's AI-native SDLC playbook](https://claude.com/blog/the-ai-native-sdlc-playbook) to its own workflow, with committed intent, specification, and planning artifacts over time. Today, its skills focus on GitHub and honor each project's conventions.
 
 Shared plugin package for Claude Code and Codex. Version `0.2.0` includes `start-work` and `deep-review`; intent stage automation, hooks, and agents are not implemented yet.
 
