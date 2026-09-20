@@ -82,7 +82,7 @@ Classify before planning:
 2. Medium: a few files or one subsystem, with some unknowns. Run focused discovery before finalizing the plan.
 3. Large: cross-cutting, user-facing workflow, schema/data migration, architectural choice, many unknowns, or vague source material. Link an existing tracking issue or ask whether to create one, run deeper discovery, and confirm scope with the user before implementation.
 
-Follow the repository's design guidance when deciding whether to solve edge cases now. Weigh likelihood, impact, recoverability, and cost instead of making the plan "complete" for its own sake.
+Follow the repository’s design guidance when deciding whether to handle edge cases now. Weigh likelihood, impact, recoverability, and the total cost of addressing or deferring related work, including repeated setup, additional review cycles, repeated context gathering, and temporary workarounds. Prefer a coherent change that fully addresses the current requirement, including related edge cases that share its design and verification. Do not defer closely related work merely to keep the PR small. Split work when it meaningfully reduces risk or separates independent concerns. When the scope tradeoff is unclear, explain the options, recommend an approach, and ask the user to decide rather than defaulting to a smaller PR. Avoid speculative completeness.
 
 ## Phase 3: Pre-Branch Discovery
 
