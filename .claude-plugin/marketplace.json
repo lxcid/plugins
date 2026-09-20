@@ -1,0 +1,16 @@
+{
+  "name": "lxcid",
+  "owner": {
+    "name": "lxcid"
+  },
+  "metadata": {
+    "description": "lxcid’s public plugins for coding agents."
+  },
+  "plugins": [
+    {
+      "name": "intentloop",
+      "source": "./plugins/intentloop",
+      "description": "AI-native SDLC loop as committed artifacts, for coding agents."
+    }
+  ]
+}
