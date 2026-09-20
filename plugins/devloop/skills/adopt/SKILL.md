@@ -16,7 +16,7 @@ Requested pattern: `$ARGUMENTS`
 
 | id | Installs as | What it says |
 | --- | --- | --- |
-| `design-judgment` | `## Design Judgment` | Minimal necessary complexity; minimality is architectural, not line-count; operator direction doesn't remove the obligation to argue; weigh edge-case likelihood, impact, recoverability, and cost together while preserving required invariants |
+| `design-judgment` | `## Design Judgment` | Minimal necessary complexity; minimality is architectural, not line-count; operator direction doesn't remove the obligation to argue; weigh edge-case likelihood, impact, recoverability, and cost together while preserving required invariants; fail loud over self-heal |
 | `debugging-discipline` | `## Debugging Discipline` | A failed fix means an incomplete mental model; escalating commitment under uncertainty; read the dependency's source; name the falsifier before editing |
 | `test-design` | `## Test Design` | TDD for behavior changes; lowest useful level with real contracts; over-stubbing is worse than no test; skipping is an explicit call |
 | `writing-style` | `## Writing Style` | Comments only for non-obvious _why_; prose with one idea per sentence; shell output never column-padded |
