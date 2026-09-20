@@ -1,6 +1,6 @@
 # devloop
 
-Devloop uses intents as units of change within its own development workflow. The intent concept informs the process; the plugin has its own scope and conventions.
+Devloop aims to adapt an AI-native development lifecycle built around committed intent, specification, and planning artifacts over time. Today, its skills focus on GitHub and honor each project's conventions: `start-work` defaults to the PR description for planning and uses a designated planning artifact when the project provides one.
 
 Shared plugin package for Claude Code and Codex. Version `0.2.0` includes `start-work` and `deep-review`; intent stage automation, hooks, and agents are not implemented yet.
 

@@ -97,7 +97,7 @@ Discovery grounds the plan in the current system shape: which files and patterns
 
 ## Phase 4: Set Up The Work Environment
 
-When continuing the same task, reuse its branch and worktree only if the PR is still open or the task branch has no PR and has not been merged. Verify that status before reusing it. If the previous PR was merged or closed, or the branch was already merged, start a new branch from the latest selected base. Do not create a new branch merely because the skill was invoked again.
+When continuing the same task, reuse its branch and worktree only if the PR is still open or the task branch has no PR and has not been merged. Verify that status before reusing it. If the previous PR was merged or closed, or the branch was already merged, resolve any remaining task work as described below before starting a new branch from the latest selected base. Do not create a new branch merely because the skill was invoked again.
 
 Inspect git state:
 
@@ -112,7 +112,7 @@ Protect existing work:
 1. If the worktree is dirty, identify whether the changes are yours and whether they overlap the planned files.
 2. If dirty changes are unrelated, avoid touching them.
 3. If dirty changes overlap and you did not make them, ask how to proceed.
-4. If `git status --short --branch` shows the branch ahead of its upstream or holding unpushed commits, treat those commits as user-owned work and ask before branching from a different base.
+4. Before branching from a different base, check for task work not incorporated into that base, whether pushed or unpushed, including branches without an upstream. Treat that work as user-owned and resolve how to carry it forward before switching; a clean status or being up to date with upstream does not establish that the work was integrated.
 
 Derive a branch slug:
 
@@ -138,17 +138,17 @@ For new work that needs a branch, choose the working base:
 
 Resolve the repository's default branch from `gh repo view --json defaultBranchRef --jq .defaultBranchRef.name` or a verified remote HEAD; do not assume it is named `main`. Use an explicit user-selected base when provided, otherwise use the default branch. Substitute that selection for `<base>` in the examples below. The examples assume the target remote is `origin`; substitute the appropriate remote when needed.
 
-1. Prefer working in the primary checkout when it is clean and not already on a branch with an open PR or in-progress work for a different task.
+1. Prefer working in the primary checkout when it is clean and any open PR or in-progress work there belongs to this task.
 2. On the default branch: fetch the latest base, then create a new branch from `origin/<base>` with the chosen `<prefix>/<slug>`.
 3. On another branch: look for an associated PR.
 
 ```bash
-gh pr list --head "$(git branch --show-current)" --state open --json number,state,url,baseRefName,headRefName --limit 5
+gh pr list --head "$(git branch --show-current)" --state open --json number,title,state,url,baseRefName,headRefName --limit 5
 ```
 
-Only if the open-PR lookup succeeds with no results, look for closed or merged PRs using the same command with `--state closed`. A lookup error leaves the PR status unknown.
+Only if the open-PR lookup succeeds with no results, look for closed or merged PRs using the same command with `--state closed`. A lookup error leaves the PR status unknown. Resolve the lookup failure or ask the user before deciding whether to reuse or replace the branch. If the PR title and session context do not establish whether it belongs to this task, inspect the PR description and linked issues or ask the user.
 
-If the branch has an open PR or in-progress work for a different task, ask whether this work belongs there or should use a new branch/worktree. If it has only closed or merged PRs, or the branch itself was already merged, start a new branch from the latest selected base in the current checkout. If local changes or unpushed commits remain, ask how to carry them forward before switching; do not discard them or continue on the merged branch. For new work, default to a new branch in the primary checkout when it is available; consider a worktree when the primary checkout is already occupied. If there is no PR and the branch has user work, ask before repurposing it.
+If an open PR or unfinished work on the branch belongs to a different task, ask whether to continue there or start separately. If the branch has only closed or merged PRs, or was itself already merged, check for local changes and task work not incorporated into the selected base, whether pushed or unpushed. Account for squash/rebase merges using PR history and content evidence rather than ancestry alone. If work remains or integration is unclear, ask how to carry it forward before switching. Then create a new branch from the latest selected base in the current checkout, preserving the agreed work; do not discard it or continue on the merged branch. For new work, default to a new branch in the primary checkout when it is available; consider a worktree when the primary checkout is already occupied. If there is no PR and the branch has user work, ask before repurposing it.
 
 When asking how to continue, offer concrete choices that fit the current state:
 
@@ -161,7 +161,7 @@ Name the relevant branches and worktree paths, recommend an option, and wait for
 
 Consider a worktree when:
 
-1. The primary checkout is already on a branch with an open PR or in-progress work for a different task.
+1. An open PR or unfinished work in the primary checkout belongs to a different task.
 2. The current worktree has unrelated or overlapping dirty changes.
 3. The user wants to keep the current branch untouched.
 
