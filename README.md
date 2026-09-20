@@ -1,6 +1,6 @@
-# devloop
+# lxcid’s Public Plugins
 
-AI-native SDLC loop as committed artifacts, for coding agents. Opinionated setup, minimal and optional.
+Public plugins for Claude Code and Codex. The first plugin, `devloop`, provides an AI-native SDLC loop as committed artifacts. Opinionated setup, minimal and optional.
 
 ## Plugin configuration
 
@@ -17,11 +17,11 @@ After this configuration is merged into the default branch:
 
 ```sh
 # Claude Code
-claude plugin marketplace add lxcid/intentloop-plugin
+claude plugin marketplace add lxcid/plugins
 claude plugin install devloop@lxcid
 
 # Codex
-codex plugin marketplace add lxcid/intentloop-plugin
+codex plugin marketplace add lxcid/plugins
 codex plugin add devloop@lxcid
 ```
 

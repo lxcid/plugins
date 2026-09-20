@@ -6,8 +6,8 @@
     "name": "lxcid",
     "url": "https://github.com/lxcid"
   },
-  "homepage": "https://github.com/lxcid/intentloop-plugin",
-  "repository": "https://github.com/lxcid/intentloop-plugin",
+  "homepage": "https://github.com/lxcid/plugins",
+  "repository": "https://github.com/lxcid/plugins",
   "interface": {
     "displayName": "devloop",
     "shortDescription": "AI-native SDLC as committed artifacts.",
@@ -15,7 +15,7 @@
     "developerName": "lxcid",
     "category": "Productivity",
     "capabilities": [],
-    "websiteURL": "https://github.com/lxcid/intentloop-plugin",
+    "websiteURL": "https://github.com/lxcid/plugins",
     "defaultPrompt": ["Explain the devloop project and its current implementation status."]
   }
 }
