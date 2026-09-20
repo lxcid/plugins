@@ -7,7 +7,7 @@ description: Deep analysis and review of a PR or branch to catch inconsistency, 
 
 Do a deep analysis and review of the PR or branch. Catch inconsistency, redundancy, flaws, regressions, and accidental complexity.
 
-Review whether each change works correctly, aligns with the current design or a clearly justified future direction, and introduces only necessary, justified complexity. Check for regressions, broken contracts, and invalid states. Identify what can break, where inconsistencies arise, and what could be removed or simplified while still meeting requirements and preserving expected behavior. Distinguish complexity inherent in the problem from complexity introduced by the design or implementation. Challenge abstractions, state, and new concepts whose maintenance burden outweighs their benefit, and ask whether a simpler approach could meet the same requirements.
+Review every change for correctness, including regressions, broken contracts, and invalid states. Assess whether it aligns with the current design or a clearly justified future direction, and whether any added complexity is necessary and justified. Identify what can break, where inconsistencies arise, and what could be removed or simplified while still meeting requirements and preserving expected behavior. Distinguish complexity inherent in the problem from complexity introduced by the design or implementation. Challenge abstractions, state, and new concepts whose maintenance burden outweighs their benefit, and ask whether a simpler approach could meet the same requirements.
 
 Make sure every change earns its place without introducing accidental complexity.
 
