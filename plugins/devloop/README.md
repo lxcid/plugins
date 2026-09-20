@@ -39,7 +39,7 @@ The [adopt skill](skills/adopt/SKILL.md) installs devloop's engineering patterns
 
 The catalog is `design-judgment`, `debugging-discipline`, `test-design`, `writing-style`, `commit-conventions`, and `handoff-contract`. Each lives in its own file under [skills/adopt/references/](skills/adopt/references/): the frontmatter holds its id and version, and everything below the frontmatter is the exact text installed into `AGENTS.md`. Edit a reference file to change what a pattern says, and raise its `version` so existing adopters pick up the change.
 
-Installed sections are delimited by HTML comment markers recording the pattern's version and a hash of its body. On re-run the skill compares both: a section still on an older version updates in place, a locally edited one stops and asks before replacing anything, and a current one is left alone. Content outside the markers is never modified.
+Installed sections are delimited by HTML comment markers recording the pattern's version and a hash of the upstream text the section was written from. That hash is a baseline rather than a checksum of whatever is currently there: a body still matching it is untouched plugin content and can be replaced, and anything else is yours — whether you merged it in when adopting or edited it afterwards. On re-run an untouched section on an older version updates in place, a customized one stops and asks first, and a current one is left alone. Nothing outside the markers is modified, and the skill never reformats the file around them.
 
 Run in the target project's Git checkout. No GitHub access is required.
 

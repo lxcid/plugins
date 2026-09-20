@@ -2,8 +2,6 @@
 id: handoff-contract
 version: 1
 section: Handoff
-summary: What every finished task reports back, including the things that are easy to leave out.
-related: [design-judgment, test-design]
 ---
 
 ## Handoff

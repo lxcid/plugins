@@ -2,8 +2,6 @@
 id: debugging-discipline
 version: 1
 section: Debugging Discipline
-summary: A failed fix means an incomplete mental model; escalating commitment is the failure mode to watch for.
-related: [design-judgment]
 ---
 
 ## Debugging Discipline

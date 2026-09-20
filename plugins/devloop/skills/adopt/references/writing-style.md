@@ -2,8 +2,6 @@
 id: writing-style
 version: 1
 section: Writing Style
-summary: Comments, documentation prose, and shell output — three rules that share one goal, not making the reader parse.
-related: []
 ---
 
 ## Writing Style

@@ -2,8 +2,6 @@
 id: commit-conventions
 version: 1
 section: Commits
-summary: Conventional Commits, why-not-what bodies, and the never-amend / never-skip-hooks rules.
-related: []
 ---
 
 ## Commits

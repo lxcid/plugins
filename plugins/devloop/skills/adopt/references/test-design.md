@@ -2,8 +2,6 @@
 id: test-design
 version: 1
 section: Test Design
-summary: TDD for behavior changes, test at the lowest useful level with real contracts, and treat skipping as an explicit call.
-related: []
 ---
 
 ## Test Design

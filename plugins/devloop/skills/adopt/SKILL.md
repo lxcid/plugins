@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 Install one or more engineering patterns into the target repository's `AGENTS.md`, and keep previously installed ones current without destroying local edits.
 
-Each pattern is a self-contained section stored in `references/<id>.md`. The reference file's YAML frontmatter carries its metadata; everything below the frontmatter is the exact text installed into `AGENTS.md`. Edit the reference file to change what the pattern says, and raise its `version` when you do.
+Each pattern is a self-contained section stored in `references/<id>.md`. The reference file's YAML frontmatter carries its id, version, and section heading; everything below the frontmatter is the text installed into `AGENTS.md`. Edit the reference file to change what the pattern says, and raise its `version` when you do.
 
 Requested pattern: `$ARGUMENTS`
 
@@ -27,10 +27,11 @@ These are stances, not repository facts. They transfer as written and need no kn
 
 ## Ground Rules
 
-1. Never edit a managed section's text in place in `AGENTS.md`. Change the reference file and re-run, so the installed copy and its recorded hash stay consistent.
-2. Treat a locally edited section as user-owned. Ask before replacing it; never silently overwrite.
+1. Never edit a managed section's text in place in `AGENTS.md`. Change the reference file and re-run, so the installed copy and its recorded baseline stay consistent.
+2. Treat any section that differs from its recorded baseline as user-owned. Ask before replacing it; never silently overwrite.
 3. Never downgrade. If the installed version is newer than the reference file's, report it and leave it alone.
-4. Adopt only what was asked for. Do not install adjacent patterns because they seem related.
+4. Touch nothing outside the markers of the patterns being installed. Not the user's prose, not their other sections, not the rest of the file.
+5. Adopt only what was asked for. Do not install adjacent patterns because they seem related.
 
 ## Phase 1: Resolve What To Adopt
 
@@ -42,57 +43,65 @@ These are stances, not repository facts. They transfer as written and need no kn
 
 `AGENTS.md` at the repository root is the target. If it does not exist, create it with an `# Agent Guide` heading and a one-line statement that it holds instructions for coding agents in this repository.
 
-If `CLAUDE.md` exists as a regular file with different content, do not touch it — say so and let the user decide. This skill does not manage the symlink.
+If `CLAUDE.md` exists as a regular file whose content differs from `AGENTS.md`, do not touch it — say so and let the user decide. This skill does not manage the symlink.
 
 ## Phase 3: Decide, Per Pattern
 
-A managed section is delimited by markers that record its id, version, and a hash of the installed body:
+A managed section is delimited by markers recording its id, version, and a baseline hash:
 
-```markdown
+```text
 <!-- devloop:design-judgment v1 sha:a1b2c3d4 -->
-
 ## Design Judgment
-
 ...
 <!-- /devloop:design-judgment -->
 ```
 
-Compute the installed body's hash, and the reference file's, with the same recipe:
+**`sha` is the hash of the upstream text, not of whatever is currently installed.** It is the fingerprint of the replaceable baseline: the reference body exactly as this skill would write it. A section whose body still hashes to its recorded baseline is untouched upstream content and can be replaced freely. A section whose body hashes to anything else carries local content — whether merged in at install or edited afterwards — and is user-owned.
+
+That distinction is the whole safety mechanism. Never re-hash a body to make it match; the mismatch is the signal.
+
+Compute the installed body's hash, and the baseline, with the same trim and digest:
 
 ```bash
+# installed body
 awk -v id=design-judgment '$0 ~ "^<!-- devloop:" id " "{f=1;next} $0 ~ "^<!-- /devloop:" id " -->$"{f=0} f' AGENTS.md | perl -0777 -pe 's/\A\s+|\s+\z//g' | shasum -a 256 | cut -c1-8
 
+# baseline: the reference body, after the formatting step in Phase 4
 perl -0777 -ne 'print $1 if /^---\n.*?\n---\n(.*)\z/s' references/design-judgment.md | perl -0777 -pe 's/\A\s+|\s+\z//g' | shasum -a 256 | cut -c1-8
 ```
 
-Then act on the pair (recorded version vs. reference version, recorded hash vs. installed hash):
+Then act on the pair — recorded version against the reference version, installed body against the recorded baseline:
 
-| Installed | Body | Action |
+| Version | Body | Action |
 | --- | --- | --- |
 | absent | — | Install it. Report as added |
-| older | matches recorded hash | Replace with the new text. Report as updated, old version → new |
-| older | differs | **Conflict.** The section was edited locally and the pattern also moved. Show the differences, then ask: replace with the new version, keep the local text, or merge by hand. Wait for an answer |
-| same | matches | Nothing to do. Report as current |
-| same | differs | Locally edited with nothing newer available. Leave it. Report as locally modified |
+| older | matches baseline | Pure upstream content. Replace it. Report as updated, old version → new |
+| older | differs | **Conflict.** The section carries local content and the pattern also moved. Show the differences, then ask: replace with the new version, keep the local text, or merge by hand. Wait for an answer |
+| same | matches baseline | Nothing to do. Report as current |
+| same | differs | Customized, nothing newer available. Leave it. Report as locally modified |
 | newer | — | Installed copy came from a newer devloop. Leave it and report; do not downgrade |
 
-A body that differs only by whitespace or line wrapping is still a difference the hash will catch, usually because the target repository's formatter rewrote it. Treat it as a conflict and ask — a false question is cheaper than a silent overwrite.
+When the user keeps their local text instead of taking an update, rewrite only the marker: record the new version and the new baseline hash, and leave the body alone. The section stays flagged as customized, so it will not prompt again at this version but will ask again at the next one.
+
+A body that differs only by whitespace or line wrapping is still a difference, usually because the target repository's formatter rewrote it. Treat it as a conflict and ask — a false question is cheaper than a silent overwrite.
 
 If `AGENTS.md` already contains a heading matching the pattern's `section` but no devloop markers, do not add a second one. Show the existing section, say which parts the pattern would add, and ask whether to replace it, merge into it, or skip.
 
 ## Phase 4: Apply
 
-Write each section with its open marker, the reference body, and its close marker, with the reference file's version and the freshly computed hash.
+For each pattern being written, take the reference body, format it if the project has a Markdown formatter, and hash the result. That is the baseline, and it goes in the marker.
 
+Format the body on its own — write it to a temporary file, run the project's formatter on that file, and read it back. Do not run a formatter over `AGENTS.md`. Reformatting the whole document rewrites the user's own prose and can normalize a customized section back into something that hashes as untouched, which silently converts local content into replaceable content.
+
+- Write the section as: open marker, body, close marker.
+- **On a plain install or a clean update**, the body is the formatted reference body, and it matches the baseline in the marker.
+- **On a merge**, the body is the merged text but the marker still records the baseline hash of the pure reference body. The section therefore reads as customized from that moment on, and every future update asks before touching it. Merging is permission to add the pattern's content now, not permission to delete the user's content later.
 - Append new sections in catalog order, after the last devloop-managed section, or at the end of the file.
 - Leave the position of already-installed sections alone. Updating a pattern rewrites its body in place; it does not move it.
-- If the reference frontmatter lists a `related` pattern that is not installed and will not be installed in this run, drop any Markdown link to that section and keep the prose. A live document should not carry dead anchors.
-- Preserve everything outside the markers untouched.
+- Change nothing outside the markers of the patterns you are writing.
 
 ## Phase 5: Report
 
-List each requested pattern and its outcome: added, updated (with the version change), current, locally modified, or skipped with the reason. Name any conflict the user resolved and how.
+List each requested pattern and its outcome: added, updated (with the version change), current, locally modified, or skipped with the reason. Name any conflict the user resolved and how, and say plainly when a section was left carrying local content.
 
-If the repository has a Markdown formatter, run it on `AGENTS.md`, then recompute and rewrite each affected hash so the recorded value matches the formatted text. Skipping this makes the next run report a false conflict on every section.
-
-Commit the change if the user asked for it; otherwise leave it staged for review.
+Commit the change if the user asked for it; otherwise leave it for review.
