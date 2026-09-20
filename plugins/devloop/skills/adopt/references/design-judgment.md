@@ -21,6 +21,6 @@ Operator direction sets the product constraints, but it does not remove the agen
 - **Recoverability** — can they recover with existing UI or an obvious manual action?
 - **Cost** — how much implementation, testing, documentation, and future constraint does the fix add?
 
-Tolerate or defer a case when the combined assessment justifies it and required invariants remain satisfied. Call out the trade-off in the handoff so the operator can decide if the bar moves.
+Tolerate or defer a case when the four factors together show that the fix costs more than the failure and required invariants remain satisfied. Low likelihood alone cannot justify deferring a high-impact, unrecoverable failure. Don't introduce durable complexity to make rare behavior tidy. Call out the trade-off in the handoff so the operator can decide if the bar moves.
 
 **Essential complexity is earned; accidental complexity is the default failure mode.** Add a status value, index, retry, rollback, or layer only when a _present_ feature needs it. The cost of a wrong abstraction is paid by every later reader; the cost of a right abstraction deferred by one week is usually nothing.

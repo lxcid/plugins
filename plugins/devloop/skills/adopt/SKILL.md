@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 Install one or more engineering patterns into the target repository's `AGENTS.md`, and keep previously installed ones current without destroying local edits.
 
-Each pattern is a self-contained section stored in `references/<id>.md`. The reference file's YAML frontmatter carries its id, version, and section heading; everything below the frontmatter is the text installed into `AGENTS.md`. Edit the reference file to change what the pattern says, and raise its `version` when you do.
+Each pattern is a self-contained section stored in `references/<id>.md`. The reference file's YAML frontmatter carries its id, version, and section heading; everything below the frontmatter is the text installed into `AGENTS.md`. Edit the reference file to change what the pattern says, and raise its `version` when you change a pattern that has already shipped.
 
 Requested pattern: `$ARGUMENTS`
 
@@ -60,14 +60,11 @@ A managed section is delimited by markers recording its id, version, and a basel
 
 That distinction is the whole safety mechanism. Never re-hash a body to make it match; the mismatch is the signal.
 
-Compute the installed body's hash, and the baseline, with the same trim and digest:
+Compute the installed body's hash with the same trim and digest used for the baseline in Phase 4:
 
 ```bash
 # installed body
 awk -v id=design-judgment '$0 ~ "^<!-- devloop:" id " "{f=1;next} $0 ~ "^<!-- /devloop:" id " -->$"{f=0} f' AGENTS.md | perl -0777 -pe 's/\A\s+|\s+\z//g' | shasum -a 256 | cut -c1-8
-
-# baseline: the reference body, after the formatting step in Phase 4
-perl -0777 -ne 'print $1 if /^---\n.*?\n---\n(.*)\z/s' references/design-judgment.md | perl -0777 -pe 's/\A\s+|\s+\z//g' | shasum -a 256 | cut -c1-8
 ```
 
 Then act on the pair — recorded version against the reference version, installed body against the recorded baseline:
@@ -92,6 +89,12 @@ If `AGENTS.md` already contains a heading matching the pattern's `section` but n
 For each pattern being written, take the reference body, format it if the project has a Markdown formatter, and hash the result. That is the baseline, and it goes in the marker.
 
 Format the body on its own — write it to a temporary file, run the project's formatter on that file, and read it back. Do not run a formatter over `AGENTS.md`. Reformatting the whole document rewrites the user's own prose and can normalize a customized section back into something that hashes as untouched, which silently converts local content into replaceable content.
+
+Hash that temporary file after formatting, using the same trim and digest as the installed-body check. Here, `formatted_body` is the path to that file:
+
+```bash
+perl -0777 -pe 's/\A\s+|\s+\z//g' "$formatted_body" | shasum -a 256 | cut -c1-8
+```
 
 - Write the section as: open marker, body, close marker.
 - **On a plain install or a clean update**, the body is the formatted reference body, and it matches the baseline in the marker.
