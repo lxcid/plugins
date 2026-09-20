@@ -48,7 +48,7 @@ If a relevant issue exists, link the work to it and use it as context. If severa
 2. Small work: ask whether the user wants a tracking issue; otherwise proceed without one.
 3. Never create a duplicate issue when an existing ticket is close enough to carry the work.
 
-For medium, large, or multi-session work, open a draft PR right after branch setup (Phase 4). By default, use its description as the shared planning surface. Follow existing project conventions when they designate another home for the plan, such as a version-controlled `plan.md`, and link to it from the PR. Keep one authoritative plan.
+For medium, large, or multi-session work, reuse the task's existing open PR or open a draft PR right after branch setup (Phase 4). By default, use its description as the shared planning surface. Follow existing project conventions when they designate another home for the plan, such as a version-controlled `plan.md`, and link to it from the PR. Keep one authoritative plan.
 
 Use supporting documents, shared notes, or scratchpads when they help with exploration, coordination, or continuity during development. Keep them clearly connected to the authoritative plan, and fold decisions back into it as they settle rather than maintaining competing versions.
 
@@ -97,6 +97,8 @@ Discovery grounds the plan in the current system shape: which files and patterns
 
 ## Phase 4: Set Up The Work Environment
 
+When continuing the same task, reuse its branch and worktree only if the PR is still open or the task branch has no PR and has not been merged. Verify that status before reusing it. If the previous PR was merged or closed, or the branch was already merged, start a new branch from the latest selected base. Do not create a new branch merely because the skill was invoked again.
+
 Inspect git state:
 
 ```bash
@@ -130,13 +132,13 @@ git worktree list --porcelain
 git branch --list "<prefix>/<slug>"
 ```
 
-If a matching worktree exists, offer to use it instead of recreating it. If the branch exists without a worktree, offer to attach a worktree to it. If the target path exists but is not a git worktree, stop and ask; do not overwrite it.
+If a matching worktree exists, offer to use it instead of recreating it. If the branch exists without a worktree, prefer checking it out in the current checkout when safe. If the target path exists but is not a git worktree, stop and ask; do not overwrite it.
 
-Choose the working base:
+For new work that needs a branch, choose the working base:
 
 Resolve the repository's default branch from `gh repo view --json defaultBranchRef --jq .defaultBranchRef.name` or a verified remote HEAD; do not assume it is named `main`. Use an explicit user-selected base when provided, otherwise use the default branch. Substitute that selection for `<base>` in the examples below. The examples assume the target remote is `origin`; substitute the appropriate remote when needed.
 
-1. Prefer working in the primary checkout when it is clean and not already on a branch with an open PR or in-progress work.
+1. Prefer working in the primary checkout when it is clean and not already on a branch with an open PR or in-progress work for a different task.
 2. On the default branch: fetch the latest base, then create a new branch from `origin/<base>` with the chosen `<prefix>/<slug>`.
 3. On another branch: look for an associated PR.
 
@@ -146,7 +148,16 @@ gh pr list --head "$(git branch --show-current)" --state open --json number,stat
 
 Only if the open-PR lookup succeeds with no results, look for closed or merged PRs using the same command with `--state closed`. A lookup error leaves the PR status unknown.
 
-If the branch has an open PR or in-progress work for a different task, ask whether this work belongs there or should use a new branch/worktree. If it has only closed or merged PRs and no remaining user work, move back to the latest selected base in the primary checkout and branch from there. Default to a new branch in the primary checkout when it is available; consider a worktree when the primary checkout is already occupied. If there is no PR and the branch has user work, ask before repurposing it.
+If the branch has an open PR or in-progress work for a different task, ask whether this work belongs there or should use a new branch/worktree. If it has only closed or merged PRs, or the branch itself was already merged, start a new branch from the latest selected base in the current checkout. If local changes or unpushed commits remain, ask how to carry them forward before switching; do not discard them or continue on the merged branch. For new work, default to a new branch in the primary checkout when it is available; consider a worktree when the primary checkout is already occupied. If there is no PR and the branch has user work, ask before repurposing it.
+
+When asking how to continue, offer concrete choices that fit the current state:
+
+- Continue on the existing branch and worktree, only if its PR is open or it has no PR and is unmerged.
+- Create a new branch from the latest default branch (usually `main`) in the primary worktree, if it is safe to use.
+- Create a new branch from the latest default branch in a new worktree.
+- Use another branch, base, or worktree specified by the user.
+
+Name the relevant branches and worktree paths, recommend an option, and wait for the user's choice. Selecting the new-worktree option authorizes that worktree; do not ask again for the same approval.
 
 Consider a worktree when:
 
@@ -154,7 +165,7 @@ Consider a worktree when:
 2. The current worktree has unrelated or overlapping dirty changes.
 3. The user wants to keep the current branch untouched.
 
-Ask before creating a worktree. A typical shape is:
+Ask whether the user wants a separate worktree or prefers to stay in the current checkout, and wait for explicit approval before creating one, including when attaching an existing branch. A request to start work or create a branch or PR is not approval to create a worktree. Honor approval already given for that worktree. A typical shape is:
 
 ```bash
 git fetch origin <base>
@@ -163,7 +174,7 @@ git worktree add -b <prefix>/<slug> ../<repo>-<slug> origin/<base>
 
 Confirm with the user before branching from anything other than the default branch, unless they already selected that base. If a new worktree needs setup, prefer documented repo setup commands. If setup is not obvious, ask whether to run one or skip. Stream setup output, and if setup fails, leave the branch/worktree in place and report the exact command to retry.
 
-For medium, large, or multi-session work, open a draft PR as soon as the branch exists. Push an empty commit if there is nothing to commit yet (`git commit --allow-empty -m "chore: initial commit"` or equivalent), then create the draft PR with a minimal body that links the tracking issue. Use the PR description as the default planning surface, or link to the authoritative plan designated by project conventions. Supporting notes may live elsewhere; keep settled decisions in the authoritative plan.
+For medium, large, or multi-session work, reuse the task's existing open PR. If none exists, open a draft PR as soon as the branch exists. Push an empty commit if there is nothing to commit yet (`git commit --allow-empty -m "chore: initial commit"` or equivalent), then create the draft PR with a minimal body that links the tracking issue. Use the PR description as the default planning surface, or link to the authoritative plan designated by project conventions. Supporting notes may live elsewhere; keep settled decisions in the authoritative plan.
 
 ## Phase 5: Plan Implementation
 
