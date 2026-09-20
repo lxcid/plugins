@@ -1,6 +1,6 @@
 {
   "name": "devloop",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "AI-native SDLC loop as committed artifacts, for coding agents.",
   "author": {
     "name": "lxcid",
@@ -11,11 +11,12 @@
   "interface": {
     "displayName": "devloop",
     "shortDescription": "AI-native SDLC as committed artifacts.",
-    "longDescription": "Packaging scaffold for devloop, a shared development workflow for Claude Code and Codex. Workflow skills and hooks are not included yet.",
+    "longDescription": "Shared development workflow skills for Claude Code and Codex. Deep review examines PRs and branches for correctness and accidental complexity, then proposes minimal fixes without editing files.",
     "developerName": "lxcid",
     "category": "Productivity",
-    "capabilities": [],
+    "capabilities": ["Read"],
     "websiteURL": "https://github.com/lxcid/plugins",
-    "defaultPrompt": ["Explain the devloop project and its current implementation status."]
-  }
+    "defaultPrompt": ["Use deep-review to review the current branch."]
+  },
+  "skills": "./skills/"
 }

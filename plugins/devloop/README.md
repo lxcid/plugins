@@ -2,7 +2,18 @@
 
 Devloop uses intents as units of change within its own development workflow. The intent concept informs the process; the plugin has its own scope and conventions.
 
-Shared plugin package for Claude Code and Codex. Version `0.0.0` contains packaging metadata only; workflow skills, commands, hooks, and agents are not implemented yet.
+Shared plugin package for Claude Code and Codex. Version `0.1.0` includes `deep-review`; intent stage automation, hooks, and agents are not implemented yet.
+
+## Deep review
+
+The [deep-review skill](skills/deep-review/SKILL.md) reviews a PR, branch, explicit path, or commit range for correctness, regressions, redundancy, and accidental complexity. It reports findings first, then proposes minimal fixes. Both phases leave files unchanged.
+
+- Claude Code: `/devloop:deep-review 123` or `/devloop:deep-review` for the current branch.
+- Codex: ask “Use devloop's deep-review skill to review PR 123” or “Use devloop's deep-review skill to review this branch.”
+
+Run in a Git checkout. GitHub PR lookup and diff retrieval use the GitHub CLI (`gh`) and require authentication with access to the repository. Explicit paths and commit ranges can be reviewed directly without GitHub PR discovery.
+
+The skill preserves the original personal `deep-review` instructions in a shared package. It does not require devloop intent artifacts or a separate reviewer agent.
 
 ## Package layout
 

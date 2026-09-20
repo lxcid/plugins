@@ -1,6 +1,6 @@
 # lxcid’s Public Plugins
 
-Public plugins for Claude Code and Codex. The first plugin, `devloop`, provides an AI-native SDLC loop as committed artifacts. Opinionated setup, minimal and optional.
+Public plugins for Claude Code and Codex. The first plugin, `devloop`, packages development workflow skills, starting with deep PR and branch review. Opinionated setup, minimal and optional.
 
 ## Plugin configuration
 
@@ -9,7 +9,13 @@ One [plugin package](plugins/devloop/) is shared by Claude Code and Codex. The r
 - `.claude-plugin/marketplace.json` for Claude Code.
 - `.agents/plugins/marketplace.json` for Codex.
 
-Both catalogs currently list `devloop` at `./plugins/devloop`; additional public plugins can be added under `plugins/<name>/` and listed in both catalogs. Version `0.0.0` is a configuration scaffold: it installs metadata only and does not expose workflow skills, commands, hooks, or agents yet. Each application manages its own installed copy; installing, updating, or removing it in one application does not change the other.
+Both catalogs currently list `devloop` at `./plugins/devloop`; additional public plugins can be added under `plugins/<name>/` and listed in both catalogs. Version `0.1.0` includes the `deep-review` skill. Each application manages its own installed copy; installing, updating, or removing it in one application does not change the other.
+
+### Review a PR or branch
+
+After installing, invoke `/devloop:deep-review 123` in Claude Code, or ask Codex to “Use devloop's deep-review skill to review PR 123.” A PR URL, an explicit file or commit range, or the current branch also works.
+
+The skill reviews correctness and whether each change earns its place, then proposes minimal fixes without editing files. GitHub PR discovery and patch retrieval require the `gh` CLI authenticated to the repository. See the [package README](plugins/devloop/README.md) for details.
 
 ### Install from GitHub
 
