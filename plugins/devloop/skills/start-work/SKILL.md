@@ -134,7 +134,7 @@ git branch --list "<prefix>/<slug>"
 
 If a matching worktree exists, offer to use it instead of recreating it. If the branch exists without a worktree, prefer checking it out in the current checkout when safe. If the target path exists but is not a git worktree, stop and ask; do not overwrite it.
 
-For new work that needs a branch, choose the working base:
+For new work that needs a branch, choose the working base.
 
 Resolve the repository's default branch from `gh repo view --json defaultBranchRef --jq .defaultBranchRef.name` or a verified remote HEAD; do not assume it is named `main`. Use an explicit user-selected base when provided, otherwise use the default branch. Substitute that selection for `<base>` in the examples below. The examples assume the target remote is `origin`; substitute the appropriate remote when needed.
 
@@ -147,7 +147,7 @@ git log --oneline origin/<base>..HEAD
 ```
 
 1. Prefer working in the primary checkout when it is clean and no open PR or in-progress work there belongs to a different task.
-2. On the default branch: fetch the latest base, then create a new branch from `origin/<base>` with the chosen `<prefix>/<slug>`.
+2. On the default branch: create a new branch from `origin/<base>` with the chosen `<prefix>/<slug>`.
 3. On another branch: look for an associated PR.
 
 ```bash
@@ -161,7 +161,7 @@ If an open PR or unfinished work on the branch belongs to a different task, ask 
 When asking how to continue, offer concrete choices that fit the current state:
 
 - Continue on the existing branch and worktree, only if its PR is open or it has no PR and is unmerged.
-- Create a new branch from the latest default branch (usually `main`) in the primary worktree, if it is safe to use.
+- Create a new branch from the latest default branch in the primary checkout, if it is safe to use.
 - Create a new branch from the latest default branch in a new worktree.
 - Use another branch, base, or worktree specified by the user.
 
