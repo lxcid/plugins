@@ -21,4 +21,4 @@ Scopes are this repository's own top-level units. Use a combined `chore(a,b): â€
 - One logical change per commit. Mechanical changes such as a reformat go in their own commit.
 - Never `--amend` unless explicitly asked; create a new commit. Hook failure means the commit didn't happen, so an amend would modify the _previous_ commit and may destroy work.
 - Never `--no-verify` to skip hooks. Fix the underlying issue.
-- **Fail loud > self-heal.** A single attempt plus a recovery hint beats retry loops with leapfrog or idempotent guards.
+- If a commit or hook fails, inspect and report the failure. Fix its cause before retrying; do not bypass hooks or automatically amend another commit.

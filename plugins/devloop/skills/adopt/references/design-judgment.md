@@ -14,13 +14,13 @@ Operator direction sets the product constraints, but it does not remove the agen
 
 **Argue with numbers, and audit your own counter-proposal.** When pushing back on a proposed design, the minimality principles above are priors to test, not verdicts to cite: quantify the binding constraint before judging a design over- or under-built. Then red-team your alternative as hard as the proposal, against the same conditions. A position that needs a new compensating patch each time it is challenged is the escalating-commitment signal from Debugging Discipline at design scope — and it applies to both sides of the discussion. When it is your position, stop defending it and re-derive from scratch; when it is the operator's, your job is to help them break the loop with evidence, not to concede to authority. If neither design survives and the discussion stalls, drop both: enumerate the actual requirements together and derive a solution from those.
 
-**Weigh every edge case before fixing it** — `likelihood × impact × recoverability × cost`:
+**Weigh every edge case before fixing it.** Consider these factors together:
 
 - **Likelihood** — how often does this happen in the current product shape?
 - **Impact** — what actually happens to the user or operator?
 - **Recoverability** — can they recover with existing UI or an obvious manual action?
 - **Cost** — how much implementation, testing, documentation, and future constraint does the fix add?
 
-If the case is low-likelihood, low-impact, easily-recoverable, or creates only harmless extra state, tolerate it. Don't introduce durable complexity to make rare behavior tidy. Call out the trade-off in the handoff so the operator can decide if the bar moves.
+Tolerate or defer a case when the combined assessment justifies it and required invariants remain satisfied. Call out the trade-off in the handoff so the operator can decide if the bar moves.
 
 **Essential complexity is earned; accidental complexity is the default failure mode.** Add a status value, index, retry, rollback, or layer only when a _present_ feature needs it. The cost of a wrong abstraction is paid by every later reader; the cost of a right abstraction deferred by one week is usually nothing.

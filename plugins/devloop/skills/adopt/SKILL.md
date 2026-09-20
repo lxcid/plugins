@@ -16,11 +16,11 @@ Requested pattern: `$ARGUMENTS`
 
 | id | Installs as | What it says |
 | --- | --- | --- |
-| `design-judgment` | `## Design Judgment` | Minimal necessary complexity; minimality is architectural, not line-count; operator direction doesn't remove the obligation to argue; the `likelihood × impact × recoverability × cost` edge-case test |
+| `design-judgment` | `## Design Judgment` | Minimal necessary complexity; minimality is architectural, not line-count; operator direction doesn't remove the obligation to argue; weigh edge-case likelihood, impact, recoverability, and cost together while preserving required invariants |
 | `debugging-discipline` | `## Debugging Discipline` | A failed fix means an incomplete mental model; escalating commitment under uncertainty; read the dependency's source; name the falsifier before editing |
 | `test-design` | `## Test Design` | TDD for behavior changes; lowest useful level with real contracts; over-stubbing is worse than no test; skipping is an explicit call |
 | `writing-style` | `## Writing Style` | Comments only for non-obvious _why_; prose with one idea per sentence; shell output never column-padded |
-| `commit-conventions` | `## Commits` | Conventional Commits; why-not-what bodies; never `--amend`, never `--no-verify`; fail loud over self-heal |
+| `commit-conventions` | `## Commits` | Conventional Commits; why-not-what bodies; amend only when explicitly asked; never skip hooks; inspect and fix commit failures before retrying |
 | `handoff-contract` | `## Handoff` | What every finished task reports back, including trade-offs taken, drift noticed, tests skipped, and what you could not verify |
 
 These are stances, not repository facts. They transfer as written and need no knowledge of the target repo.
