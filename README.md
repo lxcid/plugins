@@ -15,7 +15,7 @@ Both catalogs currently list `devloop` at `./plugins/devloop`; additional public
 
 After installing, invoke `/devloop:start-work 123` in Claude Code, or ask Codex to “Use devloop's start-work skill to implement issue 123.” An issue URL, another ticket reference, or a freeform task description also works.
 
-The skill checks the request against current code and recent decisions, resolves scope, prepares a branch or worktree, and proceeds into implementation. For medium, large, or multi-session work, it keeps the evolving plan in a draft PR. GitHub operations require the `gh` CLI authenticated to the target repository. See the [package README](plugins/devloop/README.md) for details.
+The skill checks the request against current code and recent decisions, resolves scope, prepares a branch or worktree, and proceeds into implementation. For medium, large, or multi-session work, it defaults to the draft PR description for the evolving plan, or follows project conventions for a planning artifact linked from the PR. GitHub operations require the `gh` CLI authenticated to the target repository. See the [package README](plugins/devloop/README.md) for details.
 
 ### Review a PR or branch
 

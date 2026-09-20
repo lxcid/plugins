@@ -5,7 +5,7 @@ description: Resolve and start implementation work from a GitHub issue, ticket r
 
 # Start Work
 
-Use this workflow to move from "there is work to do" to a prepared implementation branch, then to a well-scoped implementation plan written on its draft PR, with enough context, scope control, and verification to avoid chasing stale issue text.
+Use this workflow to move from "there is work to do" to a prepared implementation branch, then to a well-scoped implementation plan in a shared planning surface, with enough context, scope control, and verification to avoid chasing stale issue text.
 
 Classify scope, treat issues as context rather than commands, do code discovery before medium/large plans, derive a useful branch/worktree slug, and surface stale assumptions before coding.
 
@@ -17,7 +17,7 @@ Run in the target project's Git checkout. GitHub issue and PR operations use the
 2. Prefer local truth over old issue text. Current code, current docs, merged PRs, and recent issue comments can supersede the issue body.
 3. Ask the user when the source material is vague, contradictory, stale, or expanding beyond the original request. Honor decisions and authorization already given in the session rather than asking again.
 4. Do not overwrite uncommitted work. Treat a dirty worktree as user-owned until proven otherwise.
-5. Once the task is clear and the work environment is safe, proceed into implementation. Do not stop at a proposal unless the user asked for planning only or an ambiguity genuinely blocks safe work.
+5. Once the task is clear and the work environment is safe, proceed into implementation. Do not stop at a proposal unless an ambiguity blocks progress or the user asks you to pause or switch to planning only.
 
 ## Phase 0: Resolve The Work Item
 
@@ -48,7 +48,11 @@ If a relevant issue exists, link the work to it and use it as context. If severa
 2. Small work: ask whether the user wants a tracking issue; otherwise proceed without one.
 3. Never create a duplicate issue when an existing ticket is close enough to carry the work.
 
-For medium, large, or multi-session work, the shared planning surface is a draft PR opened right after branch setup (Phase 4). Use the tracking issue only to link the work and to record decisions that must survive before a branch exists; do not run a parallel planning thread in issue comments.
+For medium, large, or multi-session work, open a draft PR right after branch setup (Phase 4). By default, use its description as the shared planning surface. Follow existing project conventions when they designate another home for the plan, such as a version-controlled `plan.md`, and link to it from the PR. Keep one authoritative plan.
+
+Use supporting documents, shared notes, or scratchpads when they help with exploration, coordination, or continuity during development. Keep them clearly connected to the authoritative plan, and fold decisions back into it as they settle rather than maintaining competing versions.
+
+Use the tracking issue to link the work and capture decisions made before the planning surface is available. Carry those decisions into the plan when it is established.
 
 ## Phase 1: Review The Current State
 
@@ -159,11 +163,11 @@ git worktree add -b <prefix>/<slug> ../<repo>-<slug> origin/<base>
 
 Confirm with the user before branching from anything other than the default branch, unless they already selected that base. If a new worktree needs setup, prefer documented repo setup commands. If setup is not obvious, ask whether to run one or skip. Stream setup output, and if setup fails, leave the branch/worktree in place and report the exact command to retry.
 
-For medium, large, or multi-session work, open a draft PR as soon as the branch exists. Push an empty commit if there is nothing to commit yet (`git commit --allow-empty -m "chore: initial commit"` or equivalent), then create the draft PR with a minimal body that links the tracking issue. From then on the draft PR is the planning surface: update its description as planning and implementation progress instead of posting planning notes elsewhere.
+For medium, large, or multi-session work, open a draft PR as soon as the branch exists. Push an empty commit if there is nothing to commit yet (`git commit --allow-empty -m "chore: initial commit"` or equivalent), then create the draft PR with a minimal body that links the tracking issue. Use the PR description as the default planning surface, or link to the authoritative plan designated by project conventions. Supporting notes may live elsewhere; keep settled decisions in the authoritative plan.
 
 ## Phase 5: Plan Implementation
 
-With the environment ready, write the implementation plan. For small work, the brief in-session plan from Phase 2 suffices. For medium, large, or multi-session work, write the plan into the draft PR description and keep it updated there as understanding changes.
+With the environment ready, write the implementation plan. For small work, the brief in-session plan from Phase 2 suffices. For medium, large, or multi-session work, write and maintain one authoritative plan in the draft PR description by default, or in the planning artifact designated by project conventions and linked from the PR. Use supporting notes as needed and fold settled decisions into the plan as understanding changes.
 
 Plan from the current system shape surfaced in discovery:
 
@@ -200,6 +204,6 @@ Finish with:
 4. Verification: commands run and results.
 5. Open questions or deferred scope.
 
-Keep the PR body current as the continuation surface: final scope, key decisions, verification, and known deferrals. If no draft PR was opened earlier, bring the latest understanding into the PR body when creating it. Link back to the issue rather than duplicating its history.
+Keep the authoritative plan current with final scope, key decisions, verification, and known deferrals. When the plan lives outside the PR description, keep the PR summary and link current so the next session can find it. If no draft PR was opened earlier, include the latest understanding or link to the existing plan when creating it. Link back to the issue rather than duplicating its history.
 
 Do not close a GitHub issue or mark a ticket done unless the user explicitly asked or the PR body is intentionally set up to close it on merge.
