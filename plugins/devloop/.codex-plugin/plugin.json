@@ -1,6 +1,6 @@
 {
   "name": "devloop",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "AI-native SDLC loop as committed artifacts, for coding agents.",
   "author": {
     "name": "lxcid",
@@ -11,14 +11,15 @@
   "interface": {
     "displayName": "devloop",
     "shortDescription": "AI-native SDLC as committed artifacts.",
-    "longDescription": "Shared development workflow skills for Claude Code and Codex. Start work resolves an issue or task, prepares a branch and plan, and begins implementation. Deep review examines PRs and branches for correctness and accidental complexity, then proposes minimal fixes without editing files.",
+    "longDescription": "Shared development workflow skills for Claude Code and Codex. Start work resolves an issue or task, prepares a branch and plan, and begins implementation. Deep review examines PRs and branches for correctness and accidental complexity, then proposes minimal fixes without editing files. Adopt installs devloop's engineering patterns into a project's AGENTS.md and keeps them current on re-run.",
     "developerName": "lxcid",
     "category": "Productivity",
     "capabilities": ["Read", "Write"],
     "websiteURL": "https://github.com/lxcid/plugins",
     "defaultPrompt": [
       "Use start-work to begin implementing a task.",
-      "Use deep-review to review the current branch."
+      "Use deep-review to review the current branch.",
+      "Use adopt to install devloop's engineering patterns into this project."
     ]
   },
   "skills": "./skills/"

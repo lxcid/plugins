@@ -1,6 +1,6 @@
 # lxcid’s Public Plugins
 
-Public plugins for Claude Code and Codex. The first plugin, `devloop`, packages development workflow skills for starting implementation work and reviewing PRs and branches. Opinionated setup, minimal and optional.
+Public plugins for Claude Code and Codex. The first plugin, `devloop`, packages development workflow skills for starting implementation work, reviewing PRs and branches, and adopting engineering patterns into a project. Opinionated setup, minimal and optional.
 
 ## Plugin configuration
 
@@ -9,7 +9,7 @@ One [plugin package](plugins/devloop/) is shared by Claude Code and Codex. The r
 - `.claude-plugin/marketplace.json` for Claude Code.
 - `.agents/plugins/marketplace.json` for Codex.
 
-Both catalogs currently list `devloop` at `./plugins/devloop`; additional public plugins can be added under `plugins/<name>/` and listed in both catalogs. Version `0.2.0` includes the `start-work` and `deep-review` skills. Each application manages its own installed copy; installing, updating, or removing it in one application does not change the other.
+Both catalogs currently list `devloop` at `./plugins/devloop`; additional public plugins can be added under `plugins/<name>/` and listed in both catalogs. Version `0.3.0` includes the `start-work`, `deep-review`, and `adopt` skills. Each application manages its own installed copy; installing, updating, or removing it in one application does not change the other.
 
 ### Start implementation work
 
@@ -22,6 +22,12 @@ The skill checks the request against current code and recent decisions, resolves
 After installing, invoke `/devloop:deep-review 123` in Claude Code, or ask Codex to “Use devloop's deep-review skill to review PR 123.” A PR URL, an explicit file or commit range, or the current branch also works.
 
 The skill reviews correctness and whether each change earns its place, then proposes minimal fixes without editing files. GitHub PR discovery and patch retrieval require the `gh` CLI authenticated to the repository. See the [package README](plugins/devloop/README.md) for details.
+
+### Adopt engineering patterns
+
+After installing, invoke `/devloop:adopt all` in Claude Code, or ask Codex to “Use devloop's adopt skill to install its engineering patterns.” A single pattern id also works, and no argument lists the catalog.
+
+The skill copies stance sections — design judgment, debugging discipline, test design, writing style, commit conventions, and the handoff contract — into the project's `AGENTS.md`, each marked with its version so a later run can update it without overwriting local edits. See the [package README](plugins/devloop/README.md) for the catalog and the update rules.
 
 ### Install from GitHub
 
