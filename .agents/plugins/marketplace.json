@@ -1,0 +1,20 @@
+{
+  "name": "lxcid",
+  "interface": {
+    "displayName": "lxcid’s Public Plugins"
+  },
+  "plugins": [
+    {
+      "name": "devloop",
+      "source": {
+        "source": "local",
+        "path": "./plugins/devloop"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

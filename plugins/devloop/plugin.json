@@ -1,0 +1,12 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "devloop",
+  "version": "0.1.0",
+  "description": "AI-native SDLC loop as committed artifacts, for coding agents.",
+  "author": {
+    "name": "lxcid",
+    "url": "https://github.com/lxcid"
+  },
+  "homepage": "https://github.com/lxcid/plugins",
+  "repository": "https://github.com/lxcid/plugins"
+}
