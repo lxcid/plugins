@@ -19,16 +19,13 @@ Look for inconsistency, redundancy, regressions, accidental complexity, weak abs
 
 ## Before Reviewing
 
-1. Check the workspace and resolve the target:
-   - Run `git status --short` and record the current `HEAD` before either PR or branch discovery. State whether staged, unstaged, and untracked changes are in scope; exclude them from an explicit PR review unless the user asks otherwise. Do not switch, stash, or reset the user's checkout to prepare a review.
-   - If the user names an explicit file, path, or commit range, review that directly and skip PR discovery.
-   - For an explicit PR number or URL, run `gh pr view <number-or-url> --json title,body,baseRefName,headRefName,headRefOid,commits,files` for intent and the head SHA, then `gh pr diff <number-or-url>` for the patch. Read full files from that committed revision with `git show <head-sha>:<path>`; fetch missing objects without switching branches. Ensure the patch and file contents refer to the same head revision; if the PR advances during review, refresh them together. Use an isolated worktree at that revision if execution is needed.
-   - For a branch review, resolve the requested branch (the current branch by default) to a commit SHA. Look for a matching open PR with `gh pr list --head <branch> --state open --json number,url,headRefName,baseRefName`; use it for intent and base-branch context, not as a replacement for the branch's actual diff. A closed or merged PR must not become the review target unless explicitly requested.
-   - Diff the branch's recorded SHA against its merge base with the selected base: `git merge-base <base> <branch-sha>`, then `git diff <merge-base-sha> <branch-sha>`. Prefer a user-specified base, then the matching open PR's base, then the repository's default branch; verify the chosen ref exists. Read full files from `<branch-sha>` so local commits absent from a PR are included and uncommitted edits are not silently mixed into committed code. Review any in-scope uncommitted changes separately.
-   - The `files` list is metadata, not the patch — always read the diff itself.
-2. Read the PR body and commit messages as the claimed intent; on a noisy branch, skim routine commits and focus on the ones that change behavior.
-3. Read repo guidance that applies to the touched surface, especially agent guidance such as `AGENTS.md` or `CLAUDE.md`.
-4. Read changed files in full when judging behavior or architecture; do not review only the diff hunk when surrounding code matters. On a large PR, triage by risk — behavior, schema, and auth first, mechanical churn last — and say so when you are sampling rather than reading everything.
+1. Run `git status --short`. If staged, unstaged, or untracked changes exist and the user has not already decided their scope, pause and ask whether to include them in the review. Wait for an answer before reviewing. Keep any included local changes distinct from the committed target.
+2. Resolve the target:
+   - **Explicit file, path, or commit range:** review it directly; skip PR discovery.
+   - **Explicit PR number or URL:** use `gh pr view` for its metadata and `gh pr diff` for its patch, passing the supplied number or URL to both.
+   - **Branch, or no explicit target:** review the requested branch, defaulting to the current branch. Use `gh pr list --head <branch> --state open` for PR context only. Diff the branch's actual commit against the merge base with the user-specified base, the matching open PR's base, or the repository's default branch, in that order. Include local commits absent from the PR; never substitute an old closed or merged PR's patch.
+3. For commit-based reviews, record the target SHA and read full files from that revision with `git show <sha>:<path>`. Fetch missing objects without switching, stashing, or resetting the user's checkout; use an isolated worktree if execution is needed. Keep the patch and file contents at the same revision, refreshing both if the target moves. Always read the actual diff, not just the file list.
+4. Read the PR body and commit messages as the claimed intent, plus applicable repo guidance such as `AGENTS.md` or `CLAUDE.md`. Read changed files in full when surrounding code matters. On large changes, prioritize behavior, schema, and auth over mechanical churn, and disclose any sampling.
 
 Do this in two phases.
 
