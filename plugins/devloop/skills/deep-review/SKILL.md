@@ -19,11 +19,12 @@ Look for inconsistency, redundancy, regressions, accidental complexity, weak abs
 
 ## Before Reviewing
 
-1. Resolve the target:
+1. Check the workspace and resolve the target:
+   - Run `git status --short` and record the current `HEAD` before either PR or branch discovery. State whether staged, unstaged, and untracked changes are in scope; exclude them from an explicit PR review unless the user asks otherwise. Do not switch, stash, or reset the user's checkout to prepare a review.
    - If the user names an explicit file, path, or commit range, review that directly and skip PR discovery.
-   - For a PR number or URL, run `gh pr view <N> --json title,body,baseRefName,headRefName,commits,files` for intent, then `gh pr diff <N>` for the actual patch. To read files at the PR's version instead of your working tree, `gh pr checkout <N>` first.
-   - Without a PR, reverse-lookup the current branch's PR with `gh pr view --json title,body,baseRefName,headRefName,commits,files` (or `gh pr list --head "$(git branch --show-current)" --state all --json number,url,headRefName,baseRefName --limit 1` then `gh pr view <number> ...`), and fetch its patch with `gh pr diff` the same way.
-   - Only if GitHub has no matching PR, diff against the base: `git diff $(git merge-base <base> HEAD)..HEAD`, using the PR's `baseRefName` when known and `main` only as the last resort. Run `git status --short` and say whether uncommitted changes are in scope.
+   - For an explicit PR number or URL, run `gh pr view <number-or-url> --json title,body,baseRefName,headRefName,headRefOid,commits,files` for intent and the head SHA, then `gh pr diff <number-or-url>` for the patch. Read full files from that committed revision with `git show <head-sha>:<path>`; fetch missing objects without switching branches. Ensure the patch and file contents refer to the same head revision; if the PR advances during review, refresh them together. Use an isolated worktree at that revision if execution is needed.
+   - For a branch review, resolve the requested branch (the current branch by default) to a commit SHA. Look for a matching open PR with `gh pr list --head <branch> --state open --json number,url,headRefName,baseRefName`; use it for intent and base-branch context, not as a replacement for the branch's actual diff. A closed or merged PR must not become the review target unless explicitly requested.
+   - Diff the branch's recorded SHA against its merge base with the selected base: `git merge-base <base> <branch-sha>`, then `git diff <merge-base-sha> <branch-sha>`. Prefer a user-specified base, then the matching open PR's base, then the repository's default branch; verify the chosen ref exists. Read full files from `<branch-sha>` so local commits absent from a PR are included and uncommitted edits are not silently mixed into committed code. Review any in-scope uncommitted changes separately.
    - The `files` list is metadata, not the patch — always read the diff itself.
 2. Read the PR body and commit messages as the claimed intent; on a noisy branch, skim routine commits and focus on the ones that change behavior.
 3. Read repo guidance that applies to the touched surface, especially agent guidance such as `AGENTS.md` or `CLAUDE.md`.
