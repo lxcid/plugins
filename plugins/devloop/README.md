@@ -1,4 +1,6 @@
-# intentloop
+# devloop
+
+Devloop uses intents as units of change within its own development workflow. The intent concept informs the process; the plugin has its own scope and conventions.
 
 Shared plugin package for Claude Code and Codex. Version `0.0.0` contains packaging metadata only; workflow skills, commands, hooks, and agents are not implemented yet.
 

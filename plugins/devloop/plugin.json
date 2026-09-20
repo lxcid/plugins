@@ -1,6 +1,6 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
-  "name": "intentloop",
+  "name": "devloop",
   "version": "0.0.0",
   "description": "AI-native SDLC loop as committed artifacts, for coding agents.",
   "author": {

@@ -8,8 +8,8 @@
   },
   "plugins": [
     {
-      "name": "intentloop",
-      "source": "./plugins/intentloop",
+      "name": "devloop",
+      "source": "./plugins/devloop",
       "description": "AI-native SDLC loop as committed artifacts, for coding agents."
     }
   ]

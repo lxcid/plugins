@@ -5,10 +5,10 @@
   },
   "plugins": [
     {
-      "name": "intentloop",
+      "name": "devloop",
       "source": {
         "source": "local",
-        "path": "./plugins/intentloop"
+        "path": "./plugins/devloop"
       },
       "policy": {
         "installation": "AVAILABLE",

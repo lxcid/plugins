@@ -1,5 +1,5 @@
 {
-  "name": "intentloop",
+  "name": "devloop",
   "version": "0.0.0",
   "description": "AI-native SDLC loop as committed artifacts, for coding agents.",
   "author": {
@@ -9,13 +9,13 @@
   "homepage": "https://github.com/lxcid/intentloop-plugin",
   "repository": "https://github.com/lxcid/intentloop-plugin",
   "interface": {
-    "displayName": "intentloop",
+    "displayName": "devloop",
     "shortDescription": "AI-native SDLC as committed artifacts.",
-    "longDescription": "Packaging scaffold for intentloop, a shared development workflow for Claude Code and Codex. Workflow skills and hooks are not included yet.",
+    "longDescription": "Packaging scaffold for devloop, a shared development workflow for Claude Code and Codex. Workflow skills and hooks are not included yet.",
     "developerName": "lxcid",
     "category": "Productivity",
     "capabilities": [],
     "websiteURL": "https://github.com/lxcid/intentloop-plugin",
-    "defaultPrompt": ["Explain the intentloop project and its current implementation status."]
+    "defaultPrompt": ["Explain the devloop project and its current implementation status."]
   }
 }
