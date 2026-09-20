@@ -1,6 +1,6 @@
 ---
 name: deep-review
-description: Deep analysis and review of a PR or branch to catch inconsistency, redundancy, flaws, regressions, accidental complexity, weak abstractions, and lazy fixes. Use when asked to decide whether every change earns its place, review a PR skeptically, make a PR smaller/cleaner, or propose minimal fixes after review. Accepts a PR number/URL, or reverse-lookups the current branch's GitHub PR before falling back to a main-branch diff.
+description: Deep analysis and review of a PR or branch to catch inconsistency, redundancy, flaws, regressions, accidental complexity, weak abstractions, and lazy fixes. Use when asked to decide whether every change earns its place, review a PR skeptically, make a PR smaller/cleaner, or propose minimal fixes after review. Accepts an explicit review target or helps the user choose among recent PRs, branches, and worktrees.
 ---
 
 # Deep Review
@@ -19,12 +19,12 @@ Look for inconsistency, redundancy, regressions, accidental complexity, weak abs
 
 ## Before Reviewing
 
-1. Run `git status --short`. If staged, unstaged, or untracked changes exist and the user has not already decided their scope, pause and ask whether to include them in the review. Wait for an answer before reviewing. Keep any included local changes distinct from the committed target.
-2. Resolve the target:
+1. Resolve the target before reviewing. If no PR is provided and no other target is explicit, or the request is ambiguous, inspect recently updated open PRs, recently active local branches with changes, and worktrees (`git worktree list`). Present a short list with PR titles/numbers, branches, worktree paths, and available recency/change information. Ask the user which target to review and wait for an answer; do not select one merely because it is current or newest.
    - **Explicit file, path, or commit range:** review it directly; skip PR discovery.
    - **Explicit PR number or URL:** use `gh pr view` for its metadata and `gh pr diff` for its patch, passing the supplied number or URL to both.
-   - **Branch, or no explicit target:** review the requested branch, defaulting to the current branch. Use `gh pr list --head <branch> --state open` for PR context only. Diff the branch's actual commit against the merge base with the user-specified base, the matching open PR's base, or the repository's default branch, in that order. Include local commits absent from the PR; never substitute an old closed or merged PR's patch.
-3. For commit-based reviews, record the target SHA and read full files from that revision with `git show <sha>:<path>`. Fetch missing objects without switching, stashing, or resetting the user's checkout; use an isolated worktree if execution is needed. Keep the patch and file contents at the same revision, refreshing both if the target moves. Always read the actual diff, not just the file list.
+   - **Explicit branch or worktree:** use `gh pr list --head <branch> --state open` for PR context only. Diff the selected branch or worktree's actual commit against the merge base with the user-specified base, the matching open PR's base, or the repository's default branch, in that order. Include local commits absent from the PR; never substitute an old closed or merged PR's patch.
+2. If the selected target has a local worktree, check that worktree rather than assuming the current directory: `git -C <worktree-path> status --short`. If staged, unstaged, or untracked changes exist and the user has not already decided their scope, pause and ask whether to include them in the review. Wait for an answer before reviewing. Keep any included local changes distinct from the committed target. When the target choices already identify local changes, combine target selection and the inclusion question to avoid another round trip.
+3. For commit-based reviews, record the PR's head SHA, the branch or worktree's tip SHA, or the specified commit/range endpoints. Read full files from the relevant revision with `git show <sha>:<path>`. Fetch missing objects without switching, stashing, or resetting the user's checkout; use an isolated worktree if execution is needed. Keep the patch and file contents at the same revision, refreshing both if the target moves. Always read the actual diff, not just the file list.
 4. Read the PR body and commit messages as the claimed intent, plus applicable repo guidance such as `AGENTS.md` or `CLAUDE.md`. Read changed files in full when surrounding code matters. On large changes, prioritize behavior, schema, and auth over mechanical churn, and disclose any sampling.
 
 Do this in two phases.

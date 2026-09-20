@@ -8,8 +8,10 @@ Shared plugin package for Claude Code and Codex. Version `0.1.0` includes `deep-
 
 The [deep-review skill](skills/deep-review/SKILL.md) reviews a PR, branch, explicit path, or commit range for correctness, regressions, redundancy, and accidental complexity. It reports findings first, then proposes minimal fixes. Both phases leave files unchanged.
 
-- Claude Code: `/devloop:deep-review 123` or `/devloop:deep-review` for the current branch.
+- Claude Code: `/devloop:deep-review 123` or `/devloop:deep-review` to choose a target.
 - Codex: ask “Use devloop's deep-review skill to review PR 123” or “Use devloop's deep-review skill to review this branch.”
+
+If the target is missing or ambiguous, the skill offers recent PRs, branches, and worktrees and waits for your choice. If the selected worktree has uncommitted changes, it asks whether to include them before reviewing, unless you have already decided.
 
 Run in a Git checkout. GitHub PR lookup and diff retrieval use the GitHub CLI (`gh`) and require authentication with access to the repository. Explicit paths and commit ranges can be reviewed directly without GitHub PR discovery.
 
