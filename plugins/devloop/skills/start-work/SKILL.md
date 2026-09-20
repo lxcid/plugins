@@ -1,6 +1,6 @@
 ---
 name: start-work
-description: Start implementation from a GitHub issue, ticket reference, or freeform task. Resolve current scope, prepare a branch or worktree, preserve the plan in a draft PR when warranted, and begin coding. Do not use for review-only or planning-only requests.
+description: Resolve and start implementation work from a GitHub issue, ticket reference, or freeform task description. Use when the user asks to start work, pick up an issue, implement a feature or bug fix, set up a well-scoped implementation plan before writing code, turn a vague description into actionable work, create or link a tracking ticket, preserve planning memory in an issue or PR, prepare the branch/worktree, and begin coding. Do not use for review-only or planning-only requests.
 ---
 
 # Start Work
