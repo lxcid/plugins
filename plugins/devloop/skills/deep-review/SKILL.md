@@ -11,7 +11,7 @@ Review every change for correctness, including regressions, broken contracts, an
 
 Make sure every change earns its place without introducing accidental complexity.
 
-Question what must be stored versus what can be derived, who owns each piece of state, and which transitions are valid. Look for duplicated or contradictory state, synchronization burdens, and transitions that can leave the system in an invalid state. Prefer designs that minimize unnecessary state and make invalid states difficult to represent or reach.
+Pay attention to state, which can introduce complexity through ownership, synchronization, and transitions. Question what must be stored versus what can be derived, who owns each piece of state, and which transitions are valid. Look for duplicated or contradictory state, synchronization burdens, and transitions that can leave the system in an invalid state. Prefer designs that minimize unnecessary state and make invalid states difficult to represent or reach.
 
 Your job is not to make the PR pass by patching around problems. Your job is to decide whether each change deserves to exist.
 
