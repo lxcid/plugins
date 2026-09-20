@@ -11,7 +11,7 @@ section: Debugging Discipline
 - **At a dependency boundary, read the dependency's source before changing your approach.** The source is on disk. Grep for the handler you suspect instead of theorizing from symptoms.
 - **Enumerate every input that could produce the symptom before concluding any one is _the_ cause.** Stopping one doesn't stop the others. For event-driven code this means listing the full family that can fire, not the first one that looks plausible.
 - **Symptom-based theories are hypotheses, not conclusions.** Before editing, name what you think is happening and what would falsify it. If the fix fails, treat the hypothesis as incomplete or unproven — narrow with a log, source-reading, or a smaller repro before editing again.
-- **A failed attempt is not a licence to delete required behavior.** Replacing a broken inline editor with a cruder prompt removes the interaction instead of fixing it. Redesign when evidence says the design is wrong, not merely because the third patch failed.
+- **"Simple" or "minimal" means the smallest sufficient fix with the feature's requirements held constant.** Replacing a broken inline editor with a cruder prompt removes the interaction instead of fixing it. Starting over or switching libraries does not establish that you understood or fixed the cause. Redesign when evidence says the design is wrong, not merely because repeated attempts failed.
 
 ### Worked example
 
