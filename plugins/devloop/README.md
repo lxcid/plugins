@@ -13,7 +13,7 @@ The [deep-review skill](skills/deep-review/SKILL.md) reviews a PR, branch, expli
 
 Run in a Git checkout. GitHub PR lookup and diff retrieval use the GitHub CLI (`gh`) and require authentication with access to the repository. Explicit paths and commit ranges can be reviewed directly without GitHub PR discovery.
 
-The skill preserves the original personal `deep-review` instructions in a shared package. It does not require devloop intent artifacts or a separate reviewer agent.
+The skill adapts the original personal `deep-review` instructions for a shared package. It does not require devloop intent artifacts or a separate reviewer agent.
 
 ## Package layout
 

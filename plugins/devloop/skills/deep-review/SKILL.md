@@ -7,9 +7,11 @@ description: Deep analysis and review of a PR or branch to catch inconsistency, 
 
 Do a deep analysis and review of the PR or branch. Catch inconsistency, redundancy, flaws, regressions, and accidental complexity.
 
-Correctness is in scope — regressions, broken contracts, invalid states — and so is the harder question most reviews skip: whether each change should exist at all, catching accidental complexity, weak abstractions, half-finished renames, and concepts that do not earn their place.
+Review whether each change works correctly, aligns with the current design or a clearly justified future direction, and introduces only necessary, justified complexity. Check for regressions, broken contracts, and invalid states. Identify what can break, where inconsistencies arise, and what could be removed or simplified while still meeting requirements and preserving expected behavior. Distinguish complexity inherent in the problem from complexity introduced by the design or implementation. Challenge abstractions, state, and new concepts whose maintenance burden outweighs their benefit, and ask whether a simpler approach could meet the same requirements.
 
 Make sure every change earns its place without introducing accidental complexity.
+
+Treat state as a primary source of complexity. Question what must be stored versus what can be derived, who owns each piece of state, and which transitions are valid. Look for duplicated or contradictory state, synchronization burdens, and transitions that can leave the system in an invalid state. Prefer designs that minimize unnecessary state and make invalid states difficult to represent or reach.
 
 Your job is not to make the PR pass by patching around problems. Your job is to decide whether each change deserves to exist.
 
@@ -37,7 +39,7 @@ Explain:
 
 - what changed
 - why it may have been changed
-- whether it fits the current architecture
+- whether it aligns with the current architecture or a clearly justified future direction
 - what it breaks or risks breaking
 - what is redundant or overcomplicated
 - what should be removed, simplified, or redesigned
@@ -47,7 +49,8 @@ Also check:
 - inconsistency between files, docs, tests, contracts, and naming
 - half-finished renames or old and new shapes coexisting
 - state that is stored when it could be derived, or cached with no clear authoritative source
-- data shapes that make invalid states representable
+- unclear state ownership or unnecessary synchronization between duplicated state
+- data shapes or transitions that allow invalid or contradictory states
 - duplicated validation, state, error handling, or abstractions
 - tests that mock away the behavior they claim to protect
 - docs drift for user-facing or agent-facing behavior
