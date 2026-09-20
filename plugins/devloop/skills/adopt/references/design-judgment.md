@@ -23,6 +23,8 @@ Operator direction sets the product constraints, but it does not remove the agen
 
 Tolerate or defer a case when the four factors together show that the fix costs more than the failure and required invariants remain satisfied. Low likelihood alone cannot justify deferring a high-impact, unrecoverable failure. Don't introduce durable complexity to make rare behavior tidy. Call out the trade-off in the handoff so the operator can decide if the bar moves.
 
+**Prefer deriving values from authoritative inputs over maintaining additional mutable copies.** Keep domain calculations independent of caching and scheduling details; justify any required coupling.
+
 **Fail loud > self-heal.** Prefer a single attempt that exposes failure and gives the operator a useful recovery hint. Don't add retry loops, sequencing tricks, or duplicate-execution guards merely to make the operation appear seamless.
 
-**Essential complexity is earned; accidental complexity is the default failure mode.** Add a status value, index, retry, rollback, or layer only when a _present_ feature needs it. The cost of a wrong abstraction is paid by every later reader; the cost of a right abstraction deferred by one week is usually nothing.
+**Implementation complexity must earn its place.** Add a status value, index, retry, rollback, or layer only when a _present_ feature needs it. The cost of a wrong abstraction is paid by every later reader; the cost of a right abstraction deferred by one week is usually nothing.
