@@ -63,6 +63,10 @@ Deliver Phase 1 as findings first, ordered by practical severity: impact, likeli
 
 Only after the review, propose minimal fixes. Do not edit files here either — this phase proposes, it does not apply. State once that these are reference proposals for reviewer judgment, not mandatory instructions, then give confident, concrete proposals.
 
+Judge "minimal" against the current product need, any invariant it actually requires, the existing architecture, and any recorded architectural direction — not by diff size alone. Do not recommend a locally small patch that conflicts with the existing architecture or a recorded direction, or adds a temporary concept already known to be replaced. If the smallest credible on-path answer is deletion, deferral, or a larger redesign, say so plainly. Operator direction remains final, but surface and argue the architectural trade-off before treating it as settled.
+
+Turn the same skepticism on your own proposals that Phase 1 turns on findings: red-team each suggested alternative as hard as the change it replaces. Name the conditions that would break it, and check them against measured reality rather than doctrine. If a proposal accumulates qualifiers or compensating patches as you write it, treat that as evidence the smaller design does not exist at this scope, and recommend the larger one plainly instead of shipping the appearance of minimal.
+
 Prefer deletion, consolidation, or reverting bad changes over adding more code. Do not introduce new abstractions unless the existing design truly cannot handle the case.
 
 For each suggestion, state the concrete edit, why it is the smallest credible option, and what it removes: lines, branches, concepts, duplicated state, or unnecessary vocabulary. Include tradeoffs or uncertainty when they matter, so the reviewer can use their own judgment and choose a better solution if one is available. Also name what should stay unchanged so good work does not get churned.
