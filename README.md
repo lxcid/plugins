@@ -1,6 +1,6 @@
 # lxcid’s Public Plugins
 
-Public plugins for Claude Code and Codex. The first plugin, `devloop`, packages development workflow skills, starting with deep PR and branch review. Opinionated setup, minimal and optional.
+Public plugins for Claude Code and Codex. The first plugin, `devloop`, packages development workflow skills for starting implementation work and reviewing PRs and branches. Opinionated setup, minimal and optional.
 
 ## Plugin configuration
 
@@ -9,7 +9,13 @@ One [plugin package](plugins/devloop/) is shared by Claude Code and Codex. The r
 - `.claude-plugin/marketplace.json` for Claude Code.
 - `.agents/plugins/marketplace.json` for Codex.
 
-Both catalogs currently list `devloop` at `./plugins/devloop`; additional public plugins can be added under `plugins/<name>/` and listed in both catalogs. Version `0.1.0` includes the `deep-review` skill. Each application manages its own installed copy; installing, updating, or removing it in one application does not change the other.
+Both catalogs currently list `devloop` at `./plugins/devloop`; additional public plugins can be added under `plugins/<name>/` and listed in both catalogs. Version `0.2.0` includes the `start-work` and `deep-review` skills. Each application manages its own installed copy; installing, updating, or removing it in one application does not change the other.
+
+### Start implementation work
+
+After installing, invoke `/devloop:start-work 123` in Claude Code, or ask Codex to “Use devloop's start-work skill to implement issue 123.” An issue URL, another ticket reference, or a freeform task description also works.
+
+The skill checks the request against current code and recent decisions, resolves scope, prepares a branch or worktree, and proceeds into implementation. For medium, large, or multi-session work, it keeps the evolving plan in a draft PR. GitHub operations require the `gh` CLI authenticated to the target repository. See the [package README](plugins/devloop/README.md) for details.
 
 ### Review a PR or branch
 
