@@ -37,7 +37,7 @@ Run from the repository root. These commands register this checkout as a marketp
 
 ```sh
 # Claude Code
-claude plugin marketplace add .
+claude plugin marketplace add ./
 claude plugin install devloop@lxcid
 
 # Codex
