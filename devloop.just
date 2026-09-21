@@ -43,12 +43,16 @@ reinstall-codex:
         echo "codex is not on PATH; skipping Codex" >&2
         exit 0
     fi
-    # Codex ships no manifest validator, so a malformed catalog surfaces as a
-    # failed `marketplace add`. Unlike Claude Code, `marketplace add` refuses a
-    # registration that points elsewhere, so the teardown is required here.
-    # `plugin remove` is idempotent; `marketplace remove` exits 1 when nothing
-    # is registered.
-    codex plugin remove devloop@lxcid
+    # Codex ships no manifest validator, and nothing else covers
+    # .agents/plugins/marketplace.json: `claude plugin validate` reads the
+    # .claude-plugin catalog. A malformed catalog therefore surfaces as a failed
+    # `marketplace add` below, after the teardown has run, leaving Codex with no
+    # lxcid registration until the catalog is fixed and this recipe re-run.
+    #
+    # Unlike Claude Code, `marketplace add` refuses a registration that points
+    # elsewhere, so the teardown is required. `marketplace remove` exits 1 when
+    # nothing is registered, and takes the installed plugin with it, so no
+    # separate `plugin remove` is needed.
     codex plugin marketplace remove lxcid || true
     codex plugin marketplace add {{ quote(justfile_directory()) }}
     codex plugin add devloop@lxcid
