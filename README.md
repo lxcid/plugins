@@ -57,11 +57,11 @@ codex plugin marketplace add .
 codex plugin add devloop@lxcid
 ```
 
-Choose either the GitHub source or the local source for the `lxcid` marketplace. Claude Code re-points an existing registration when you add the other source, so no marketplace removal is needed there — avoid `claude plugin marketplace remove`, which reaches across scopes and drops project-scoped installs. Codex refuses to re-point one, so run `codex plugin marketplace remove lxcid` before adding the new source. Switching the source does not by itself refresh an installed plugin: `claude plugin install` reports it is already installed and keeps the previous copy, so run `claude plugin uninstall devloop@lxcid` before installing again; `codex plugin add` re-copies on its own. For a local checkout, `just devloop::reinstall` handles all of this; see [Development](#development). Start a new session after installation to load the plugin.
+Choose either the GitHub source or the local source for the `lxcid` marketplace. Claude Code re-points an existing registration when you add the other source, so no marketplace removal is needed there — avoid `claude plugin marketplace remove`, which reaches across scopes and drops project-scoped installs. Codex refuses to re-point one, so run `codex plugin marketplace remove lxcid` before adding the new source. Switching the source does not by itself refresh an installed plugin: `claude plugin install` reports it is already installed and keeps the previous copy, so run `claude plugin uninstall devloop@lxcid` before installing again; `codex plugin add` re-copies on its own. Start a new session after installation to load the plugin.
 
 Claude Code can also load the package for a single development session with `claude --plugin-dir ./plugins/devloop`.
 
-While editing the package, `just devloop::reinstall` repeats this sequence for both hosts so the edits reach an installed plugin; see [Development](#development).
+While editing the package, or switching between sources, `just devloop::reinstall` does all of this for both hosts so the edits reach an installed plugin; see [Development](#development).
 
 ### Update or uninstall
 
