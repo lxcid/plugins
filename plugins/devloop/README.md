@@ -2,7 +2,7 @@
 
 Devloop aims to adapt [Anthropic's AI-native SDLC playbook](https://claude.com/blog/the-ai-native-sdlc-playbook) to its own workflow, with committed intent, specification, and planning artifacts over time. Today, its skills focus on GitHub and honor each project's conventions.
 
-Shared plugin package for Claude Code and Codex. Version `0.3.0` includes `start-work`, `deep-review`, and `adopt`; intent stage automation, hooks, and agents are not implemented yet.
+Shared plugin package for Claude Code and Codex. The package includes `start-work`, `deep-review`, `product-review`, and `adopt`; intent stage automation, hooks, and agents are not implemented yet.
 
 ## Start work
 
@@ -29,6 +29,17 @@ If the target is missing or ambiguous, the skill first asks whether to continue 
 Run in a Git checkout. GitHub PR lookup and diff retrieval use the GitHub CLI (`gh`) and require authentication with access to the repository. Explicit paths and commit ranges can be reviewed directly without GitHub PR discovery.
 
 The skill adapts the original personal `deep-review` instructions for a shared package. It does not require devloop intent artifacts or a separate reviewer agent.
+
+## Product review
+
+The [product-review skill](skills/product-review/SKILL.md) reviews a PR, branch, or diff for audience experience, design craft, product fit, and alignment with recorded direction. It draws its craft lenses from Dieter Rams, Steve Jobs, Jony Ive, and Jesse Schell, calibrated to the target project's audience and design records.
+
+- Claude Code: `/devloop:product-review 123` or `/devloop:product-review` for the current branch.
+- Codex: ask “Use devloop's product-review skill to review PR 123” or “Use devloop's product-review skill to review this branch.”
+
+With no target, it looks up the current branch's open PR, then falls back to a diff against the repository's default branch when no PR exists. Web UI reviews exercise the change in a browser and attach screenshots to rendered findings. The report gives a shipping verdict and prioritized recommendations without editing files. Missing browser access or unreachable states are disclosed as verification limits.
+
+Run in the target project's Git checkout. GitHub operations require authenticated `gh` access; browser verification needs the project's documented preview setup and browser tooling. Product context, audience, supported viewports, and themes come from the target project.
 
 ## Adopt patterns
 

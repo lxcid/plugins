@@ -9,7 +9,7 @@ One [plugin package](plugins/devloop/) is shared by Claude Code and Codex. The r
 - `.claude-plugin/marketplace.json` for Claude Code.
 - `.agents/plugins/marketplace.json` for Codex.
 
-Both catalogs currently list `devloop` at `./plugins/devloop`; additional public plugins can be added under `plugins/<name>/` and listed in both catalogs. Version `0.3.0` includes the `start-work`, `deep-review`, and `adopt` skills. Each application manages its own installed copy; installing, updating, or removing it in one application does not change the other.
+Both catalogs currently list `devloop` at `./plugins/devloop`; additional public plugins can be added under `plugins/<name>/` and listed in both catalogs. The package includes the `start-work`, `deep-review`, `product-review`, and `adopt` skills. Each application manages its own installed copy; installing, updating, or removing it in one application does not change the other.
 
 ### Start implementation work
 
@@ -22,6 +22,12 @@ The skill checks the request against current code and recent decisions, resolves
 After installing, invoke `/devloop:deep-review 123` in Claude Code, or ask Codex to “Use devloop's deep-review skill to review PR 123.” A PR URL, an explicit file or commit range, or the current branch also works.
 
 The skill reviews correctness and whether each change earns its place, then proposes minimal fixes without editing files. GitHub PR discovery and patch retrieval require the `gh` CLI authenticated to the repository. See the [package README](plugins/devloop/README.md) for details.
+
+### Review product experience
+
+After installing, invoke `/devloop:product-review 123` in Claude Code, or ask Codex to “Use devloop's product-review skill to review PR 123.” A branch or diff also works; without a target, it looks up the current branch's open PR before falling back to a diff against the repository's default branch.
+
+The skill reviews audience experience, design craft, product fit, and alignment with recorded direction. It exercises web UI changes in a browser, supports rendered findings with screenshots, and recommends changes without editing files. See the [package README](plugins/devloop/README.md) for setup and verification limits.
 
 ### Adopt engineering patterns
 
