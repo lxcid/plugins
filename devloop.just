@@ -1,7 +1,9 @@
 # Recipes for the devloop package: `just devloop::reinstall`.
 #
-# This file sits at the repository root, which is also the marketplace root, so
-# recipes run there and `justfile_directory()` resolves to it.
+# This file sits at the repository root, which is also the marketplace root. A
+# module's recipes run in the directory of their module file, so the relative
+# paths below resolve against the root only while this file stays there;
+# `justfile_directory()` is the root justfile's directory at any module depth.
 #
 # Both hosts install a copy of the package, so edits under plugins/devloop reach
 # an installed plugin only once the marketplace and the package are read again.
