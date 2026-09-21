@@ -61,6 +61,8 @@ Choose either the GitHub source or the local source for the `lxcid` marketplace.
 
 Claude Code can also load the package for a single development session with `claude --plugin-dir ./plugins/devloop`.
 
+While editing the package, `just devloop-reinstall` repeats the local install so the edits reach an installed plugin; see [Development](#development).
+
 ### Update or uninstall
 
 For an installation from GitHub, refresh the marketplace and install the updated package in each application:
@@ -90,3 +92,11 @@ moon run root:format-check   # what CI runs
 ```
 
 Formatting uses [oxfmt](https://oxc.rs/docs/guide/usage/formatter) with default settings, plus `proseWrap: "never"` for Markdown so paragraphs stay on one line and your editor soft-wraps them.
+
+Local recipes live in [`justfile`](justfile) and need [just](https://just.systems) on your `PATH`; it is not pinned through proto, and nothing in CI runs it. Run `just` for the list:
+
+```sh
+just devloop-reinstall       # reinstall the local checkout into Claude Code
+```
+
+Claude Code installs a copy of the package, so edits under `plugins/devloop/` reach an installed plugin only once the marketplace and the package are read again. The recipe validates both manifests, re-registers this checkout as the `lxcid` marketplace, and installs `devloop` from it. Start a new session afterwards.
