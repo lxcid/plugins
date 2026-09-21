@@ -1,9 +1,7 @@
 # Recipes for the devloop package: `just devloop::reinstall`.
 #
-# This file sits at the repository root, which is also the marketplace root. A
-# module's recipes run in the directory of their module file, so the relative
-# paths below resolve against the root only while this file stays there;
-# `justfile_directory()` is the root justfile's directory at any module depth.
+# `justfile_directory()` is the repository root, which is also the marketplace
+# root. Every path below is anchored to it, so this file can move.
 #
 # Both hosts install a copy of the package, so edits under plugins/devloop reach
 # an installed plugin only once the marketplace and the package are read again.
@@ -24,8 +22,8 @@ reinstall-claude:
         echo "claude is not on PATH; skipping Claude Code" >&2
         exit 0
     fi
-    claude plugin validate . --strict
-    claude plugin validate plugins/devloop --strict
+    claude plugin validate {{ quote(justfile_directory()) }} --strict
+    claude plugin validate {{ quote(justfile_directory() / "plugins" / "devloop") }} --strict
     # `plugin uninstall` exits 1 when nothing is installed, the expected case
     # on a first run. The registration itself is left alone: `marketplace add`
     # re-points an existing lxcid at this directory, while `marketplace remove`
