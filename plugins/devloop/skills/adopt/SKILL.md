@@ -35,7 +35,7 @@ These are stances, not repository facts. They transfer as written and need no kn
 
 ## Local Customization
 
-Recommend placing repository-specific guidance immediately after the relevant pattern's closing marker, before the next managed section. Use a descriptive heading such as `### Local debugging guidance`. Content outside the markers is preserved on re-run, so local additions do not mark the managed body as customized or block clean upstream updates. State any exception to a managed rule explicitly.
+Recommend placing repository-specific guidance immediately after the relevant pattern's closing marker, before the next managed section. Use a heading that describes the repository-specific guidance. Content outside the markers is preserved on re-run, so local additions do not mark the managed body as customized or block clean upstream updates. State any exception to a managed rule explicitly.
 
 ## Phase 1: Resolve What To Adopt
 
