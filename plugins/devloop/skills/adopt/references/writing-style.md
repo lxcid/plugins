@@ -1,6 +1,6 @@
 ---
 id: writing-style
-version: 1
+version: 2
 section: Writing Style
 ---
 
@@ -11,7 +11,9 @@ section: Writing Style
 - **Default to no comment.** Only when the _why_ is non-obvious — a hidden constraint, subtle invariant, workaround for a specific bug, behavior that would surprise a reader.
 - Don't restate _what_ the code does; identifiers do that.
 - Don't reference the current task, fix, or callers (`// used by X`, `// added for the Y flow`, `// handles the case from issue #N`). That belongs in the PR description and rots.
-- No multi-line comment blocks unless documenting a public API.
+- **One comment, one decision.** Explain the non-obvious reason for the code beside it. Let that explanation wrap naturally. Split independent explanations and place each beside the code it explains. Move broader background to the relevant guide; retain the local context needed to change the code safely.
+- **No banner or decorative blocks.** Avoid comments that serve only as visual headings or repeat the name of the code below them.
+- Keep public API documentation where developers using the API will find it, including directly above the function or type definition when appropriate.
 
 ### Documentation prose
 
