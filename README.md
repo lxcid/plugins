@@ -93,7 +93,7 @@ moon run root:format-check   # what CI runs
 
 Formatting uses [oxfmt](https://oxc.rs/docs/guide/usage/formatter) with default settings, plus `proseWrap: "never"` for Markdown so paragraphs stay on one line and your editor soft-wraps them.
 
-Local recipes live in [`justfile`](justfile) and need [just](https://just.systems) 1.40 or newer on your `PATH`; `just` is not pinned through proto, and nothing in CI runs it. Each plugin package gets a [module](https://just.systems/man/en/modules.html) named after it, in `<name>.just` at the repository root, so recipes read the way the skills do. Run `just` for the list:
+Local recipes live in [`justfile`](justfile) and need [just](https://just.systems) 1.31 or newer (when modules stabilized) on your `PATH`; `just` is not pinned through proto, and nothing in CI runs it. Each plugin package gets a [module](https://just.systems/man/en/modules.html) named after it, in `<name>.just` at the repository root, so recipes read the way the skills do. Run `just` for the list:
 
 ```sh
 just devloop::reinstall          # reinstall this checkout into both hosts
