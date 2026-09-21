@@ -49,8 +49,9 @@ reinstall-codex:
     #
     # Unlike Claude Code, `marketplace add` refuses a registration that points
     # elsewhere, so the teardown is required. `marketplace remove` exits 1 when
-    # nothing is registered, and takes the installed plugin with it, so no
-    # separate `plugin remove` is needed.
+    # nothing is registered, and drops only the registration: the plugin's
+    # config entry and its cached copy both survive. No separate `plugin remove`
+    # is needed because `plugin add` re-copies over that cache.
     codex plugin marketplace remove lxcid || true
     codex plugin marketplace add {{ quote(justfile_directory()) }}
     codex plugin add devloop@lxcid
