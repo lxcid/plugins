@@ -87,7 +87,7 @@ Write docs, issue bodies, and PR/issue comments for a human reviewer, not for de
 
 <!-- /devloop:writing-style -->
 
-<!-- devloop:commit-conventions v1 sha:b043d7c8 -->
+<!-- devloop:commit-conventions v2 sha:761ae1a5 -->
 
 ## Commits
 
@@ -95,7 +95,10 @@ Use [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) for *
 
 - `feat(<scope>):` — user-visible new behavior.
 - `fix(<scope>):` — bug fix.
-- `chore(<scope>):` — refactors, version bumps, tooling that doesn't alter behavior.
+- `refactor(<scope>):` — restructure code without changing behavior.
+- `test(<scope>):` — add or update tests.
+- `perf(<scope>):` — improve performance.
+- `chore(<scope>):` — version bumps and tooling maintenance.
 - `ci(<scope>):` — only for CI workflow changes.
 - `docs(<scope>):` — docs-only.
 
