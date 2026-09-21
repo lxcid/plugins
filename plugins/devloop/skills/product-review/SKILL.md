@@ -1,6 +1,6 @@
 ---
 name: product-review
-description: Review a PR, branch, or diff the way its user will meet it — start from the experience the audience came for, exercise the change in a real browser, screenshot it across viewports and themes, and judge how well it is made against a craft bar drawn from Dieter Rams, Steve Jobs, and Jesse Schell's lenses — with technical correctness as the floor and business direction as an always-on check that speaks only when the change contradicts recorded strategy. Use whenever the user asks for a product review, founder review, business review, UX or design review, "is this worth shipping", "does this feel good to use", "would a user be delighted", "review this like a PM", or wants the craft or scope of a change challenged. Accepts a PR number/URL, or reverse-lookups the current branch's GitHub PR before falling back to a main-branch diff. For a purely engineering review (bugs, regressions, code quality), prefer deep-review or code-review instead.
+description: Review a PR, branch, or diff for audience experience, UX, design craft, product fit, and alignment with recorded business direction. Use for product, founder, business, UX, or design reviews and questions about whether a change is worth shipping or feels good to use. Exercise web UI changes in a browser and support rendered findings with screenshots. For purely engineering reviews, prefer deep-review.
 ---
 
 # Product Review
@@ -9,12 +9,20 @@ Review a change the way its user will meet it. Start from the experience they ca
 
 ## Workflow
 
-1. **Resolve the target** the same way deep-review does: a PR number/URL → `gh pr view <N> --json title,body,baseRefName,headRefName,commits,files` + `gh pr diff <N>`; no argument → reverse-lookup the current branch's PR (`gh pr view --json …`), falling back to `git diff $(git merge-base main HEAD)..HEAD` with `git log` for intent. Read the PR body and commit messages: the _stated_ promise is what you review the delivery against.
-2. **Load product context before judging.** Read whatever this project records about direction, UX bar, and prior decisions — positioning or roadmap docs, the agent guide, design record, decisions in PR threads. Recorded operator decisions are binding: surface a disagreement, don't relitigate it. [In this repository](#in-this-repository) lists the local ones.
+1. **Resolve the target.** Honor an explicit PR, branch, or diff. For a PR, use `gh pr view <number-or-url> --json title,body,baseRefName,headRefName,commits,files` and `gh pr diff <number-or-url>`. For a branch, review its actual tip against the merge base with the requested base or the repository's default branch. With no target, look up the current branch's open PR using `gh pr list --head <branch> --state open`; if the lookup succeeds with no match, review the branch against the default branch. Resolve that default with `gh repo view --json defaultBranchRef --jq .defaultBranchRef.name` or a verified remote HEAD; do not assume its name. A failed lookup is not evidence that no PR exists. Read the PR body and commit messages: the _stated_ promise is what you review the delivery against. Keep the diff, source files, and running preview at the same revision, and disclose any local changes included in the preview.
+2. **Load product context before judging.** Read whatever this project records about direction, UX bar, and prior decisions — positioning or roadmap docs, the agent guide, design record, decisions in PR threads. Recorded operator decisions are binding: surface a disagreement, don't relitigate it. Discover these records in the target project; do not assume particular paths, document names, or precedence. If records conflict, state the conflict rather than inventing a hierarchy.
 3. **Name the audience.** You cannot start from the customer experience without first knowing whose experience it is — this step is the WWDC 1997 principle made operational ([Sources](#sources)). See [Name the audience first](#name-the-audience-first). It is a gate, not a formality: an unnamed audience means you are reviewing against your own preference, which this skill forbids.
-4. **Exercise it before judging it.** If the diff touches anything a user sees — a screen, copy, an empty state, an error path — drive a browser and actually use it. [browser-pass.md](./browser-pass.md) has how to bring each surface up, the viewport and theme matrix to capture, and the rules that keep the evidence honest. A UI reviewed from the diff alone is a code review wearing a product review's hat. If you genuinely cannot drive a browser, say so in the verdict and mark every rendered-experience finding `unverified (code-read only)` — never infer how something feels from how it is written.
+4. **Exercise it before judging it.** If the diff touches web UI — a screen, copy, an empty state, an error path — drive a browser and actually use it. Follow [Browser evidence](#browser-evidence) for setup and capture. For other surfaces, exercise the relevant interface and record equivalent evidence. A UI reviewed from the diff alone is a code review wearing a product review's hat. If you genuinely cannot drive a browser, say so in the verdict and mark every rendered-experience finding `unverified (code-read only)` — never infer how something feels from how it is written.
 5. **Review through the lenses below, in priority order.** Spend depth where the change has stakes. Skip lenses that genuinely don't apply rather than padding.
 6. **Report** in the output format at the end: verdict first, then findings ranked by severity. Do not edit files — this skill reviews and recommends; the operator decides.
+
+## Browser evidence
+
+- Use the target project's documented setup and preview commands. Identify the affected routes and required fixtures or test accounts. Report missing setup, access, or browser tooling as a verification limit.
+- Exercise the primary user path and the changed loading, empty, error, and recovery states that can be reached safely. Use local fixtures or test accounts; a review request does not authorize purchases, messages to others, or changes to production data.
+- Capture the affected surface at its intended viewport and at a narrower supported width. Use the project's breakpoints and supported themes to choose additional captures; do not impose another project's desktop-first layout or light/dark matrix.
+- For each rendered finding, retain a screenshot with its route, viewport dimensions, theme, and reproduction steps. Record the revision under review and distinguish observed behavior from assumptions.
+- If a state cannot be reached, name the missing evidence. Screenshots establish appearance; exercise interactions before claiming a flow works. Keep rendered-experience findings based only on source inspection tagged `unverified (code-read only)`.
 
 ## Review priority
 
@@ -191,34 +199,3 @@ Where the craft bar comes from, so a reviewer can check the original rather than
 - **Jony Ive on inevitability** — a recurring word across fifteen years of interviews: [Icon, 2003; _Objectified_, 2009; Dazed, 2016; Telegraph, 2018](https://en.wikiquote.org/wiki/Jonathan_Ive) · [Dazed interview](https://www.dazeddigital.com/artsandculture/article/33692/1/discussing-design-with-the-man-behind-your-iphone). The aim is a solution that seems inevitable, almost undesigned, where any alternative would look contrived. We took: _it should feel inevitable_.
 - **Jesse Schell, _The Art of Game Design: A Book of Lenses_** — 3rd ed., A K Peters/CRC Press, 2019 (1st ed. 2008) · [publisher](https://www.routledge.com/The-Art-of-Game-Design-A-Book-of-Lenses-Third-Edition/Schell/p/book/9781138632059). The claim underneath the whole book: a game is a machine for creating an experience in the player's mind, and you cannot design the experience directly — only the thing that causes it — so you judge the thing by whether it produces the feeling it was for. The book's tool is a large set of lenses: questions you turn on the same design from different angles. We took the ones that survive the games-to-tools boundary — experience over mechanism, understandable and compelling goals, feedback that communicates consequences rather than juice, meaningful choice and the dominant-option test, agency, uncertainty as tension (sign flipped: a cost in a tool unless it is curiosity), perception over measurement, and the symptom rule (a player asking for more damage means the weapon does not feel rewarding; watch what people do, not what they say). **Deliberately not adopted:** challenge scaled to skill, reward loops, curiosity through withheld information — games manufacture friction and tools remove it. **Adopted elsewhere, not here:** _prototype the risky question first — build the ugliest thing that answers "is this interesting?"_ is the best line in the book and it is scoping-time; it belongs with the skill that shapes work before building, not with review.
 - **Ours** — _"merely fine" is a finding_, the audience table, and the recurring-taste-failures list are this skill's own synthesis. They are consistent with the sources above but not drawn from them; lean on them accordingly.
-
-## In this repository
-
-Everything above is portable. This section is the only part that knows about Mempipe — swap it to move the skill to another project.
-
-**Product context** (workflow step 2), in precedence order:
-
-- [docs/product/positioning.md](../../../docs/product/positioning.md) — canonical for "should we build this now": roadmap sequence and the revenue-painkiller lens. It outranks the others on sequence.
-- [docs/product/painkiller-strategy.md](../../../docs/product/painkiller-strategy.md) — the in-workbench UX bar.
-- [docs/product/pricing.md](../../../docs/product/pricing.md) — the live SKU and meter shape.
-- [docs/marketing/marketing-guide.md](../../../docs/marketing/marketing-guide.md) — voice and copy for `apps/www`.
-- `AGENTS.md` — the **Product Sense** and **Product Constraints** sections are binding. Product Constraints records operator decisions that are closed; don't reopen them in a finding.
-
-**Audience** (workflow step 3). Recorded, so infer nothing: [positioning.md](../../../docs/product/positioning.md) names the first useful external user as someone already maintaining source-backed Markdown knowledge with agents in the loop — an AI-heavy operator, a Karpathy-pattern tinkerer, an Obsidian-plus-agents workflow builder. Behind them sit the substrate archetypes: researchers, analysts, lawyers, and consultants who must cite under audit pressure. That is the first row of the audience table above — a tools audience, not a consumer one. `AGENTS.md`'s friend-of-operator test is the same bar stated as a person.
-
-**Design record** (the craft lens): [DESIGN.md](../../../DESIGN.md) at the repo root is binding for both `apps/app` and `apps/www`, and its principles are numbered so findings can cite them. Where it and `apps/app/src/app/globals.css` disagree, the CSS is truth. The principles that most often decide a craft finding:
-
-- **P1** — semantic tokens only; a raw palette utility in `apps/app/src` is a defect, and a `dark:` variant carrying a colour is the usual tell.
-- **P2** — accent is state, not decoration.
-- **P4** — `--faint` is decorative-only and deliberately fails WCAG AA; readable secondary text uses `--muted-foreground`.
-- **P6** — chrome shows real data only: no fabricated counts or placeholder metrics.
-- **P7** — desktop-first; the shell enters compact mode below `lg` (1024px).
-
-Its Do's and Don'ts list also carries a **not adopted** set. Proposing one of those back is a finding against the review, not the PR.
-
-**Essential experience** (Schell's test, review-timed as "does this execution pull toward it or away from it"). Draft, pending operator wording: _ask a question of your own files, get an answer you can click through to the exact source passage, and keep it._ Derived from [positioning.md](../../../docs/product/positioning.md)'s trusted ask → cite → open-source loop and the LLM Wiki workflow in [llm-wiki.md](../../../docs/product/llm-wiki.md). A change can be approved, correct, and still weaken this — a citation surface that makes the source harder to open is the canonical example.
-
-**Where the craft bar is already repo policy.** Two of Rams's principles are recorded here as architecture, not taste, so a finding can cite the doc rather than the principle:
-
-- _Honest_ (6) is [DESIGN.md](../../../DESIGN.md) P6 — chrome shows real data only, no fabricated counts or placeholder metrics.
-- _Long-lasting_ (7) is [docs/product/open-format-thesis.md](../../../docs/product/open-format-thesis.md) — boring standard files as the durable source of truth, byte-stable in and out, exit cost zero. A change that makes a user's data less portable fails the craft bar and the thesis at once, and that doc asks to be challenged before such a change lands.
