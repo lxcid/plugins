@@ -1,8 +1,9 @@
 # Local development recipes. Run `just` for the list.
 #
 # The repo-wide checks that CI runs live in moon.yml. The recipes here are local
-# conveniences that drive the host CLIs, never run in CI, and only sequence
-# commands that README.md already documents, so `just` stays optional.
+# conveniences that drive the host CLIs, never run in CI, and sequence the
+# commands README.md documents plus a validation step and a closing report, so
+# `just` stays optional.
 #
 # One module per plugin package, named after it, so recipes read the way the
 # skills do: `just devloop::reinstall`, or `just devloop reinstall`. A single
