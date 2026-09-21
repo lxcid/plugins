@@ -1,7 +1,8 @@
 # Recipes for the devloop package: `just devloop::reinstall`.
 #
 # `justfile_directory()` is the repository root, which is also the marketplace
-# root. Every path below is anchored to it, so this file can move.
+# root. Every path below is anchored to it, so this file is free to move
+# wherever `mod devloop` can find it.
 #
 # Both hosts install a copy of the package, so edits under plugins/devloop reach
 # an installed plugin only once the marketplace and the package are read again.
