@@ -57,7 +57,7 @@ codex plugin marketplace add .
 codex plugin add devloop@lxcid
 ```
 
-Choose either the GitHub source or the local source for the `lxcid` marketplace. To switch, remove its existing registration with `claude plugin marketplace remove lxcid` or `codex plugin marketplace remove lxcid`, then add the new source. Start a new session after installation to load the plugin.
+Choose either the GitHub source or the local source for the `lxcid` marketplace. Claude Code re-points an existing registration when you add the other source, so no removal is needed there — avoid `claude plugin marketplace remove`, which reaches across scopes and drops project-scoped installs. Codex refuses to re-point one, so run `codex plugin marketplace remove lxcid` before adding the new source. Start a new session after installation to load the plugin.
 
 Claude Code can also load the package for a single development session with `claude --plugin-dir ./plugins/devloop`.
 
