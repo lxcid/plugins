@@ -61,7 +61,7 @@ Choose either the GitHub source or the local source for the `lxcid` marketplace.
 
 Claude Code can also load the package for a single development session with `claude --plugin-dir ./plugins/devloop`.
 
-While editing the package, `just devloop-reinstall` repeats this sequence for both hosts so the edits reach an installed plugin; see [Development](#development).
+While editing the package, `just devloop::reinstall` repeats this sequence for both hosts so the edits reach an installed plugin; see [Development](#development).
 
 ### Update or uninstall
 
@@ -93,12 +93,14 @@ moon run root:format-check   # what CI runs
 
 Formatting uses [oxfmt](https://oxc.rs/docs/guide/usage/formatter) with default settings, plus `proseWrap: "never"` for Markdown so paragraphs stay on one line and your editor soft-wraps them.
 
-Local recipes live in [`justfile`](justfile) and need [just](https://just.systems) on your `PATH`; it is not pinned through proto, and nothing in CI runs it. Run `just` for the list:
+Local recipes live in [`justfile`](justfile) and need [just](https://just.systems) on your `PATH`, version 1.50 or thereabouts; `just` is not pinned through proto, and nothing in CI runs it. Each plugin package gets a [module](https://just.systems/man/en/modules.html) named after it, in `<name>.just` at the repository root, so recipes read the way the skills do. Run `just` for the list:
 
 ```sh
-just devloop-reinstall          # reinstall this checkout into both hosts
-just devloop-reinstall-claude   # Claude Code only
-just devloop-reinstall-codex    # Codex only
+just devloop::reinstall          # reinstall this checkout into both hosts
+just devloop::reinstall-claude   # Claude Code only
+just devloop::reinstall-codex    # Codex only
 ```
 
-Both hosts install a copy of the package, so edits under `plugins/devloop/` reach an installed plugin only once the marketplace and the package are read again. Each recipe re-registers this checkout as the `lxcid` marketplace and installs `devloop` from it; `devloop-reinstall` runs both and skips a host whose CLI is not on your `PATH`. The Claude Code recipe validates both manifests first with `claude plugin validate --strict`; Codex ships no equivalent, so a malformed catalog surfaces there as a failed `marketplace add`. Start a new session in each host afterwards.
+`just devloop reinstall` is the same recipe; a single colon is not available, because just reads `:` as the recipe separator.
+
+Both hosts install a copy of the package, so edits under `plugins/devloop/` reach an installed plugin only once the marketplace and the package are read again. Each recipe re-registers this checkout as the `lxcid` marketplace and installs `devloop` from it; `reinstall` runs both and skips a host whose CLI is not on your `PATH`. The Claude Code recipe validates both manifests first with `claude plugin validate --strict`; Codex ships no equivalent, so a malformed catalog surfaces there as a failed `marketplace add`. Start a new session in each host afterwards.
