@@ -33,6 +33,10 @@ These are stances, not repository facts. They transfer as written and need no kn
 4. Touch nothing outside the markers of the patterns being installed. Not the user's prose, not their other sections, not the rest of the file.
 5. Adopt only what was asked for. Do not install adjacent patterns because they seem related.
 
+## Local Customization
+
+Recommend placing repository-specific guidance immediately after the relevant pattern's closing marker, before the next managed section. Use a descriptive heading such as `### Local debugging guidance`. Content outside the markers is preserved on re-run, so local additions do not mark the managed body as customized or block clean upstream updates. State any exception to a managed rule explicitly.
+
 ## Phase 1: Resolve What To Adopt
 
 - One or more ids: adopt exactly those. Reject an unknown id by name and list the valid ones.

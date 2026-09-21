@@ -41,6 +41,18 @@ The catalog is `design-judgment`, `debugging-discipline`, `test-design`, `writin
 
 Installed sections are delimited by HTML comment markers recording the pattern's version and a hash of the upstream text the section was written from. That hash is a baseline rather than a checksum of whatever is currently there: a body still matching it is untouched plugin content and can be replaced, and anything else is yours — whether you merged it in when adopting or edited it afterwards. On re-run an untouched section on an older version updates in place, a customized one stops and asks first, and a current one is left alone. Nothing outside the markers is modified, and the skill never reformats the file around them.
 
+For repository-specific guidance, add a descriptive heading immediately after the relevant closing marker and before the next managed section:
+
+```markdown
+<!-- /devloop:debugging-discipline -->
+
+### Local debugging guidance
+
+- Include the failing command and relevant logs in bug reports.
+```
+
+These additions stay outside the managed body, so upstream updates can proceed without a customization conflict. State any exception to a managed rule explicitly.
+
 Run in the target project's Git checkout. No GitHub access is required.
 
 ## Package layout
