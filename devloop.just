@@ -31,7 +31,7 @@ reinstall-claude:
     # re-points an existing lxcid at this directory, while `marketplace remove`
     # reaches across scopes and would drop a project-scoped install.
     claude plugin uninstall devloop@lxcid --yes || true
-    claude plugin marketplace add "{{ justfile_directory() }}"
+    claude plugin marketplace add {{ quote(justfile_directory()) }}
     claude plugin install devloop@lxcid
     claude plugin details devloop@lxcid
 
@@ -50,6 +50,6 @@ reinstall-codex:
     # is registered.
     codex plugin remove devloop@lxcid
     codex plugin marketplace remove lxcid || true
-    codex plugin marketplace add "{{ justfile_directory() }}"
+    codex plugin marketplace add {{ quote(justfile_directory()) }}
     codex plugin add devloop@lxcid
     codex plugin list --marketplace lxcid
