@@ -17,12 +17,15 @@ Requested review: `$ARGUMENTS`
 
 - Each requested host's CLI is installed and authenticated, and devloop is installed in that host. Reviewers discover `deep-review` through the installed plugin.
 - The script's child processes call model APIs. Run it with network access; in Codex, that means a sandbox escalation.
+- Reviewers run under each host's own permission configuration, and the script adds only permission to run `git`. To let reviewers run tests:
+  - For Claude, allow the test command in the project's `.claude/settings.json`. Claude applies project settings only in folders it trusts.
+  - For Codex, give it a writable sandbox, for example `sandbox_mode = "workspace-write"` in the project's `.codex/config.toml`.
 - Codex reviewers read `AGENTS.md`. Claude reviewers read `CLAUDE.md`, and fall back to `AGENTS.md` only when there is no `CLAUDE.md`. So the one case to catch is a project with both files where `CLAUDE.md` neither links to nor imports `AGENTS.md`. Tell the user before reviewing, because the Claude reviewer would miss the rules in `AGENTS.md`.
 
 ## 1. Resolve Reviewers And Target
 
 - Reviewers: `claude`, `codex`, or both. If the request does not say, ask.
-- Target: resolve it to something both reviewers can read locally, because Codex reviewers run offline.
+- Target: resolve it to something both reviewers can read locally, because a reviewer may have no network. Codex's sandbox blocks network by default.
   - A branch against its base, a commit range, or a worktree can be used as is.
   - For a PR, fetch its head into a local ref, then review that ref against the PR's base. Put the PR's title and body in the prompt as the claimed intent.
 - Uncommitted changes: decide whether they are in scope, asking the user if they have not said. Reviewers cannot ask.

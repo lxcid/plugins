@@ -95,7 +95,7 @@ The reviewer role therefore reaches Codex as `developer_instructions`, read from
 
 - The first `--json` event is `{"type":"thread.started","thread_id":"<uuid>"}`. Verified on the installed CLI, which emitted it before contacting the model.
 - The caller cannot choose the ID, and exec cannot name a thread (source-read: `app-server-protocol/src/protocol/v2/thread.rs:62-135`).
-- `codex exec -s read-only -C <dir> [-c …] resume <id> --json --output-schema <file> -o <file> "<prompt>"` resumes the thread. `-s` and `-C` belong to `codex exec` itself and must come before `resume`. Verified: the CLI rejects `resume <id> -s read-only` with "unexpected argument".
+- `codex exec -C <dir> [-c …] resume <id> --json --output-schema <file> -o <file> "<prompt>"` resumes the thread. Exec-level options such as `-C` and `-s` must come before `resume`. Verified: the CLI rejects `resume <id> -s read-only` with "unexpected argument".
 - Resuming an unknown UUID fails with "no rollout found". Verified. A thread name or `--last` that matches nothing silently starts a new thread (source-read: `exec/src/lib.rs:1017-1025`), so only UUIDs are safe, and the caller should compare IDs.
 - **Resume restores the conversation only.** Model, reasoning effort, sandbox, approval, cwd, and developer instructions all come from the current invocation (source-read: `exec/src/lib.rs:1386-1412`). A resume without them runs on defaults. `gpt-5.6-sol` defaults to `low` effort in Codex's model list, so a bare resume would quietly lower the reviewer's reasoning.
 
@@ -120,7 +120,7 @@ In each directory from the repository root down to cwd, the first of `AGENTS.ove
 
 ### Other Codex observations
 
-- `codex exec` defaults to approval `never`. `-s read-only` allows reading the whole filesystem but blocks writes and network (source-read), so `gh` will not work inside a Codex reviewer.
+- `codex exec` defaults to approval `never`. Without `-s`, the sandbox comes from config `sandbox_mode`. If that is unset, it is `workspace-write` for a trusted project and `read-only` otherwise. Neither mode allows network by default (source-read), so `gh` will not work inside a Codex reviewer.
 - Codex reads a piped stdin into the prompt. Verified: it printed "Reading additional input from stdin". A coordinator must close the child's stdin; `claude -p` behaves the same way.
 - No environment variable links a child `codex exec` to a parent Codex session, but a child shares the parent's `CODEX_HOME`, which holds its config and auth (source-read).
 - `codex exec review` is Codex's own review mode. Using it would replace deep-review, so the design does not.
@@ -149,7 +149,17 @@ Session state is one JSON file per host in `<git-dir>/devloop/review/`, holding 
 - Codex IDs cannot be derived or named, which is why a file exists at all.
 - One file per host lets the two first-round reviews run in parallel without racing on a shared file.
 
-Reviewers see only local evidence. Codex reviewers run read-only and offline, so the Claude reviewer is limited to `git`, `Read`, `Grep`, `Glob`, and `Skill` to keep the two comparable. The coordinator resolves PR targets into local refs and passes the PR body as intent.
+Reviewers run under each host's own permission configuration, so a project decides whether they may run tests.
+
+- **Claude.** The script passes only `--allowed-tools "Bash(git *)"`, because headless Claude denies any Bash command nothing allows, and deep-review cannot read a diff without git.
+  - Verified: the flag adds to the project's `.claude/settings.json` allow rules rather than replacing them.
+  - Verified: those project rules apply only in a folder Claude trusts. In an untrusted folder, a project-allowed test command was still denied.
+- **Codex.** The script passes no `-s`, so the sandbox comes from the user's or project's Codex config, as for any other Codex session.
+  - Running tests needs `workspace-write`.
+  - Codex has no mode that runs commands but forbids edits, so a Codex reviewer allowed to run tests relies on its role, not its sandbox, to leave files alone.
+- **Claude file edits.** The agent's disallowed `Edit` and `Write` tools stay in place whatever the settings say.
+
+Codex's sandbox blocks network by default, so the coordinator resolves PR targets into local refs and passes the PR body as intent.
 
 ### Verified end to end
 

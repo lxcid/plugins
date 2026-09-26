@@ -29,9 +29,11 @@ PLUGIN_ROOT = Path(__file__).resolve().parents[3]
 AGENT_FILE = PLUGIN_ROOT / "agents" / "reviewer.md"
 CLAUDE_AGENT = "devloop:reviewer"
 SKILL_INVOCATION = {"claude": "/devloop:deep-review", "codex": "$devloop:deep-review"}
-# Bash is limited to git because Codex reviewers run in a read-only, offline
-# sandbox; keeping Claude to the same local evidence keeps the two comparable.
-CLAUDE_TOOLS = ["Bash(git *)", "Read", "Grep", "Glob", "Skill"]
+# Headless Claude denies any Bash command nothing allows, and deep-review
+# cannot read a diff without git. This adds to the project's own permission
+# rules rather than replacing them, so a project that allows its test command
+# lets reviewers run tests.
+CLAUDE_TOOLS = ["Bash(git *)"]
 
 
 def _object(properties):
@@ -154,14 +156,15 @@ def run_claude(top, session_id, resume, prompt, schema):
 def run_codex(top, session_id, prompt, schema):
     settings, role = read_agent()
     config = [arg for key, value in settings.items() for arg in ("-c", f"{key}={toml_string(value)}")]
-    # Codex takes model, effort, sandbox and developer instructions from the
-    # current invocation, not from the saved session, so every call repeats them.
+    # Codex takes model, effort and developer instructions from the current
+    # invocation, not from the saved session, so every call repeats them. The
+    # sandbox is left to Codex's own config, as for any other Codex session.
     config += ["-c", f"developer_instructions={toml_string(role)}"]
     with tempfile.TemporaryDirectory() as tmp:
         schema_file, last_message = Path(tmp) / "schema.json", Path(tmp) / "last.json"
         schema_file.write_text(json.dumps(schema))
-        # -s and -C belong to `codex exec` itself and must precede `resume`.
-        cmd = ["codex", "exec", "-s", "read-only", "-C", str(top), *config]
+        # -C belongs to `codex exec` itself and must precede `resume`.
+        cmd = ["codex", "exec", "-C", str(top), *config]
         if session_id:
             cmd += ["resume", session_id]
         cmd += ["--json", "--output-schema", str(schema_file), "-o", str(last_message), prompt]
