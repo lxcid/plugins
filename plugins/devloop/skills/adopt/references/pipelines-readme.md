@@ -22,7 +22,7 @@ The operator owns the intent and its acceptance. The builder owns the plan. The 
 
 | File | Owner | Changes during the build |
 | --- | --- | --- |
-| `intent.md` | operator | only through the operator |
+| `intent.md` | operator | the body only through the operator; `status` as the Status section says |
 | `spec.md` | shared | the builder adds decisions; approved decisions change only through the operator |
 | `plan.md` | builder | freely, whenever the build shows it is wrong |
 
@@ -56,7 +56,7 @@ Ceremony scales with uncertainty and risk. The intent is the durable minimum. A 
 
 The problem, in the operator's words, written before a solution exists. It is not edited afterwards to match what was built. An intent rewritten to describe its own implementation has lost the only thing it was for.
 
-An agent may draft it. The operator approves it. Approval is the gate: no spec, no plan, and no code until the frontmatter says `approved`. After approval, only the operator changes it.
+An agent may draft it. The operator approves it. Approval is the gate: no spec, no plan, and no code until the frontmatter says `approved`. After approval, only the operator changes its body.
 
 Frontmatter carries `status` and nothing else. Sections: Problem, Proposed outcome, Affected users and systems, Constraints, Open questions. The proposed outcome says how to tell when the outcome is true, because that is what the build is verified against. Constraints include anything the operator rules out of scope.
 
@@ -118,7 +118,7 @@ Frontmatter holds document metadata, so only fields describing the pipeline as a
 | `done`        | shipped, and the outcome verified               |
 | `abandoned`   | closed without shipping; the intent records why |
 
-The operator moves `draft` to `approved`, and confirms `done` and `abandoned`. The builder moves `approved` to `in-progress`, and says so in the handoff. A status left unmoved is a wrong index, since both status commands read only this field.
+The operator moves `draft` to `approved`, and confirms `done` and `abandoned`. The builder moves `approved` to `in-progress`, and says so in the handoff. That is the only edit the builder makes to `intent.md`. The `status` field describes the pipeline, not the problem, so moving it does not change the intent. A status left unmoved is a wrong index, since both status commands read only this field.
 
 There is no index file. The index is derived:
 
@@ -153,7 +153,7 @@ The loop revises the plan, never the intent.
 
 ## Closing a pipeline
 
-A pipeline is `done` when the outcome stated in its intent is true and verified. It is not done because the code merged or because the plan ran out of steps. The builder verifies, and the operator confirms. The plan records what was verified and by which command. Anything deliberately deferred is named in the spec together with the condition that would bring it back.
+A pipeline is `done` when the outcome stated in its intent is true and verified. It is not done because the code merged or because the plan ran out of steps. The builder verifies, and the operator confirms. The plan records what was verified and by which command, or the handoff does when there is no plan. Anything deliberately deferred is named in the spec together with the condition that would bring it back. Deferring part of the proposed outcome changes the intent, so it goes to the operator.
 
 Findings from operating the system open a new pipeline. Closed pipelines stay closed.
 
