@@ -49,7 +49,9 @@ Findings end as confirmed, withdrawn, non-blocking, or unresolved. Unresolved di
 - **Codex reviewer:** runs on GPT-5.6 Sol at high reasoning effort.
 - **Where settings live:** both sets of settings live in the agent file, not in `deep-review`.
 - **Session state:** stored per worktree under the Git directory, so it is never committed.
-- **Permissions:** reviewers use each host's own settings. To let reviewers run tests, allow the test command in the project's Claude settings and give Codex a writable sandbox.
+- **Permissions:** reviewers reuse each host's own settings, and devloop grants nothing extra.
+  - For Claude, the project's settings must allow `Bash(git *)`, plus the test command if reviewers should run tests.
+  - For Codex, running tests needs a writable sandbox.
 
 Run in the target Git checkout. Requirements:
 

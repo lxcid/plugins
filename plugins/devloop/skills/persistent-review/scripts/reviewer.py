@@ -29,11 +29,6 @@ PLUGIN_ROOT = Path(__file__).resolve().parents[3]
 AGENT_FILE = PLUGIN_ROOT / "agents" / "reviewer.md"
 CLAUDE_AGENT = "devloop:reviewer"
 SKILL_INVOCATION = {"claude": "/devloop:deep-review", "codex": "$devloop:deep-review"}
-# Headless Claude denies any Bash command nothing allows, and deep-review
-# cannot read a diff without git. This adds to the project's own permission
-# rules rather than replacing them, so a project that allows its test command
-# lets reviewers run tests.
-CLAUDE_TOOLS = ["Bash(git *)"]
 
 
 def _object(properties):
@@ -138,7 +133,7 @@ def run_claude(top, session_id, resume, prompt, schema):
     # Pass the id explicitly: a claude launched from inside another Claude Code
     # session otherwise inherits that session's id from the environment.
     cmd += ["--resume", session_id] if resume else ["--session-id", session_id]
-    cmd += ["--output-format", "json", "--json-schema", json.dumps(schema), "--allowed-tools", *CLAUDE_TOOLS]
+    cmd += ["--output-format", "json", "--json-schema", json.dumps(schema)]
     proc = run(cmd, top)
     try:
         result = json.loads(proc.stdout)

@@ -65,7 +65,7 @@ Both `--agent reviewer` and `--agent devloop:reviewer` resolve a plugin agent. T
 ### Other Claude observations
 
 - The agent's `model:` is honoured, and `--model` overrides it.
-- In `-p` mode, Bash commands need `--allowed-tools`, for example `"Bash(git *)"` and `"Bash(gh *)"`. Anything else is denied and listed in `permission_denials`.
+- In `-p` mode, a Bash command runs only if the settings or `--allowed-tools` allow it. Anything else is denied and listed in `permission_denials`.
 - A Claude Code coordinator could instead spawn the reviewer as an in-session subagent and continue it with `SendMessage`. That persists only within the coordinator's own session, and a Codex coordinator cannot use it. The CLI path works from either host.
 - A small model folded under a single challenge: it withdrew the challenged finding and also an unchallenged one. Reviewer quality depends on the model, and the challenge prompt should name only the findings under dispute.
 
@@ -151,9 +151,11 @@ Session state is one JSON file per host in `<git-dir>/devloop/review/`, holding 
 
 Reviewers run under each host's own permission configuration, so a project decides whether they may run tests.
 
-- **Claude.** The script passes only `--allowed-tools "Bash(git *)"`, because headless Claude denies any Bash command nothing allows, and deep-review cannot read a diff without git.
-  - Verified: the flag adds to the project's `.claude/settings.json` allow rules rather than replacing them.
-  - Verified: those project rules apply only in a folder Claude trusts. In an untrusted folder, a project-allowed test command was still denied.
+- **Claude.** The script passes no permission flags, so the reviewer runs with the user's and project's Claude settings.
+  - Headless Claude denies any Bash command those settings do not allow, so the project must allow git.
+  - Verified: deep-review runs git as `git -C <path> …`. Per-subcommand rules such as `Bash(git diff *)` did not match, and the reviewer lost its git evidence. A project rule of `Bash(git *)` matched.
+  - Verified: project `.claude/settings.json` allow rules apply to the reviewer only in a folder Claude trusts. In an untrusted folder, a project-allowed command was still denied.
+  - Verified: `--allowed-tools` would only add to those rules, never restrict them. The script does not need it.
 - **Codex.** The script passes no `-s`, so the sandbox comes from the user's or project's Codex config, as for any other Codex session.
   - Running tests needs `workspace-write`.
   - Codex has no mode that runs commands but forbids edits, so a Codex reviewer allowed to run tests relies on its role, not its sandbox, to leave files alone.

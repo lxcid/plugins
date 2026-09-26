@@ -17,9 +17,9 @@ Requested review: `$ARGUMENTS`
 
 - Each requested host's CLI is installed and authenticated, and devloop is installed in that host. Reviewers discover `deep-review` through the installed plugin.
 - The script's child processes call model APIs. Run it with network access; in Codex, that means a sandbox escalation.
-- Reviewers run under each host's own permission configuration, and the script adds only permission to run `git`. To let reviewers run tests:
-  - For Claude, allow the test command in the project's `.claude/settings.json`. Claude applies project settings only in folders it trusts.
-  - For Codex, give it a writable sandbox, for example `sandbox_mode = "workspace-write"` in the project's `.codex/config.toml`.
+- Reviewers reuse each host's own settings, and the script grants nothing.
+  - **Claude:** headless Claude denies any Bash command its settings do not allow. The project's `.claude/settings.json` must allow `Bash(git *)`, and the test command if reviewers should run tests. deep-review runs git as `git -C <path> …`, which per-subcommand rules such as `Bash(git diff *)` do not match. Claude applies project settings only in folders it trusts.
+  - **Codex:** reads work in any sandbox. Running tests needs a writable sandbox, for example `sandbox_mode = "workspace-write"` in the project's `.codex/config.toml`.
 - Codex reviewers read `AGENTS.md`. Claude reviewers read `CLAUDE.md`, and fall back to `AGENTS.md` only when there is no `CLAUDE.md`. So the one case to catch is a project with both files where `CLAUDE.md` neither links to nor imports `AGENTS.md`. Tell the user before reviewing, because the Claude reviewer would miss the rules in `AGENTS.md`.
 
 ## 1. Resolve Reviewers And Target
