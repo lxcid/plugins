@@ -23,7 +23,7 @@ The operator owns the intent and its acceptance. The builder owns the plan. The 
 | File | Owner | Changes during the build |
 | --- | --- | --- |
 | `intent.md` | operator | the body only through the operator; `status` as the Status section says |
-| `spec.md` | shared | the builder adds decisions; approved decisions change only through the operator |
+| `spec.md` | shared | the builder adds decisions; approved decisions and preferences change only through the operator |
 | `plan.md` | builder | freely, whenever the build shows it is wrong |
 
 The builder is whoever is building, usually an agent. Ownership is authority, not authorship. An agent may draft all three files; ownership decides whose approval a change needs.
@@ -98,7 +98,7 @@ The binding set is derived, never maintained, and is listed in the order decisio
 awk '/^### /{h=substr($0,5)} /^Binding:/{print FILENAME"\t"h} /^Overturns:/{print FILENAME"\t"h"\t"$0}' docs/pipelines/*/spec.md | sed 's|docs/pipelines/||; s|/spec.md||'
 ```
 
-The list is for discovery. It includes every `Overturns:` line, which always appears below the decision it names because pipelines sort by number. It does not show which decisions are still proposed, so read each listed decision before applying it.
+The list is for discovery. It includes every `Overturns:` line. It does not show which decisions are still proposed, so read each listed decision before applying it.
 
 - A binding decision stops binding once a later decision that overturns it is approved. A proposed reversal leaves it in force.
 - A proposed binding decision is followed as if approved until the operator decides. Obeying a constraint that is later dropped costs less than breaking one that is later approved.
@@ -127,7 +127,7 @@ Frontmatter holds document metadata, so only fields describing the pipeline as a
 | `done`        | shipped, and the outcome verified               |
 | `abandoned`   | closed without shipping; the intent records why |
 
-The operator moves `draft` to `approved`, and confirms `done` and `abandoned`. The builder moves `approved` to `in-progress`, and says so in the handoff. That is the only edit the builder makes to `intent.md`. The `status` field describes the pipeline, not the problem, so moving it does not change the intent. A status left unmoved is a wrong index, since both status commands read only this field.
+The operator moves `draft` to `approved`, and confirms `done` and `abandoned`. The builder moves `approved` to `in-progress`, and says so in the handoff. The `status` field describes the pipeline, not the problem, so moving it does not change the intent. A status left unmoved is a wrong index, since both status commands read only this field.
 
 There is no index file. The index is derived:
 
@@ -151,7 +151,7 @@ The goal of a pipeline is the outcome in its intent, not its plan. The builder's
 
 The builder works in a loop:
 
-1. Read the intent, the spec if there is one, and the binding decisions from earlier pipelines.
+1. Read the intent, the spec if there is one, and the binding decisions from other pipelines.
 2. Inspect the repository.
 3. Write or revise the plan.
 4. Build.
