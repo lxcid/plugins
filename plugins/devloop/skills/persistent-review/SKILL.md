@@ -22,6 +22,8 @@ Requested review: `$ARGUMENTS`
   - **Codex:** reads work in any sandbox. Running tests needs a writable sandbox, for example `sandbox_mode = "workspace-write"` in the project's `.codex/config.toml`.
 - Codex reviewers read `AGENTS.md`. Claude reviewers read `CLAUDE.md`, and fall back to `AGENTS.md` only when there is no `CLAUDE.md`. So the one case to catch is a project with both files where `CLAUDE.md` neither links to nor imports `AGENTS.md`. Tell the user before reviewing, because the Claude reviewer would miss the rules in `AGENTS.md`.
 
+Do not verify these by hand. The script fails with a clear error when a CLI or the plugin is missing, and a reviewer reports any command its settings deny. Only the `CLAUDE.md` check needs doing first.
+
 ## 1. Resolve Reviewers And Target
 
 - Reviewers: `claude`, `codex`, or both. If the request does not say, ask.
