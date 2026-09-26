@@ -24,7 +24,7 @@ Requested pattern: `$ARGUMENTS`
 | `handoff-contract` | `## Handoff` | What every finished task reports back, including trade-offs taken, drift noticed, tests skipped, and what you could not verify |
 | `pipelines` | `## Pipelines`, and `docs/pipelines/README.md` | Work as numbered pipelines of intent, spec, and plan; the operator owns intent and acceptance, the builder owns the plan, and the spec is shared; the plan can be wrong, but the intent cannot silently change to make it right; `done` means the intent's outcome is verified |
 
-Every pattern transfers as written and needs no knowledge of the target repo. The first six are stances. `pipelines` is a process: its `AGENTS.md` section tells agents to work through approved intents, which would block work in a project that does not use them. So `all` leaves it out, and it installs only when named.
+Every pattern transfers as written and needs no knowledge of the target repo. `pipelines` is a process, and the rest are stances. The `pipelines` section in `AGENTS.md` tells agents to work through approved intents, which would block work in a project that does not use them. So `all` leaves it out, and it installs only when named.
 
 ## Ground Rules
 
@@ -41,7 +41,7 @@ Recommend placing repository-specific guidance immediately after the relevant pa
 ## Phase 1: Resolve What To Adopt
 
 - One or more ids: adopt exactly those. Reject an unknown id by name and list the valid ones.
-- `all`: adopt every stance in the catalog, in catalog order. `pipelines` is adopted only when named.
+- `all`: adopt every pattern except `pipelines`, in catalog order. `pipelines` is adopted only when named.
 - No argument: show the catalog with each pattern's current installed state, ask which to adopt, and wait for an answer.
 
 ## Phase 2: Locate The Targets
