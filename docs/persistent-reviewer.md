@@ -1,9 +1,26 @@
 # Persistent reviewer: investigation
 
-What Claude Code and Codex support today for devloop's persistent reviewer, and the smallest design those capabilities allow. The design follows the evidence; nothing below is implemented yet.
+What Claude Code and Codex support today for devloop's persistent reviewer, and the design those capabilities allow.
 
-- Claude Code findings were verified on Claude Code 2.1.283 by running headless sessions against a scratch repository and reading their transcripts.
-- Codex findings come from the Codex CLI 0.157.1 `--help` output and its Rust source at `openai/codex@e72da2b`. Codex was not run: this environment has no OpenAI credentials, and `developers.openai.com` is blocked. Every Codex claim is marked source-read, not verified.
+- **Claude Code findings are verified.** They come from running headless Claude Code 2.1.283 sessions against a scratch repository and reading their transcripts.
+- **Codex findings are mostly source-read.** They come from the Codex CLI 0.157.1 `--help` output and its Rust source at `openai/codex@e72da2b`. The installed CLI confirmed three things: the argument order, the `thread.started` event, and the stored session settings. It never reached a model, because this environment has no OpenAI credentials and blocks `api.openai.com` and `developers.openai.com`. Each Codex claim below is marked verified or source-read.
+
+## Answers
+
+| # | Question | Claude Code | Codex |
+| --- | --- | --- | --- |
+| 1 | Run the reviewer non-interactively | `claude -p --agent devloop:reviewer` | `codex exec`, with the role passed as `developer_instructions` |
+| 2 | `--agent` with a plugin agent | Works, bare or scoped name | No equivalent: roles are subagent-only, and plugins cannot ship them |
+| 3 | Session IDs | Caller sets it with `--session-id`; `--resume` keeps it | `thread.started.thread_id` in `--json` output; `exec resume <id>` |
+| 4 | Names or IDs | IDs; names are display labels | IDs; exec cannot name a thread |
+| 5 | GPT-5.6 Sol | not applicable | `-c model="gpt-5.6-sol"`; the slug is in Codex's model list |
+| 6 | Reasoning effort | not applicable | `-c model_reasoning_effort="high"`, repeated on every resume |
+| 7 | Resume | `--resume <id>` restores conversation, agent, and model | `codex exec … resume <id>` restores conversation only; settings come from the call |
+| 8 | Custom agent equivalent | Plugin agent file | None usable; `developer_instructions` from the same agent file |
+| 9 | deep-review discovery | `/devloop:deep-review` in the prompt | `$devloop:deep-review` in the prompt |
+| 10 | Project instructions | `CLAUDE.md`; `AGENTS.md` only when `CLAUDE.md` is absent | `AGENTS.md` from repository root to cwd; `CLAUDE.md` only if configured |
+| 11 | Structured output | `--json-schema` gives `structured_output` | `--output-schema` gives the last message as JSON, in strict mode |
+| 12 | Custom persistence | Needed. Codex IDs cannot be chosen or named, so something must store them. One small file per host under the git directory is enough. | same |
 
 ## Claude Code
 
@@ -61,3 +78,87 @@ Both `--agent reviewer` and `--agent devloop:reviewer` resolve a plugin agent. T
 3. **Re-review.** After a new commit removed `safe_divide`, it was resumed with "review the current work again". It inspected the new commit, marked C1 and C2 resolved, and narrowed C3 to what remained.
 
 The three rounds cost about $0.80 in total on a two-file repository.
+
+## Codex
+
+### 1 and 8. Reviewer role
+
+Codex supports custom agent roles, but only for subagents.
+
+- Roles are defined as `[agents.<name>]` in config, or as TOML files under `.codex/agents/`.
+- Only spawn paths apply them; no `codex exec` flag or config key makes a role the main agent (source-read: `core/src/agent/role.rs`, `agent/child_config.rs:290`, `agent/control/spawn.rs:428`).
+- Plugin manifests have no `agents` key (source-read: `core-plugins/src/manifest.rs:45-70`).
+
+The reviewer role therefore reaches Codex as `developer_instructions`, read from the body of the same `agents/reviewer.md`. Verified: Codex parsed the generated multi-line value and stored it as the session's developer message.
+
+### 3 and 7. Session IDs and resume
+
+- The first `--json` event is `{"type":"thread.started","thread_id":"<uuid>"}`. Verified on the installed CLI, which emitted it before contacting the model.
+- The caller cannot choose the ID, and exec cannot name a thread (source-read: `app-server-protocol/src/protocol/v2/thread.rs:62-135`).
+- `codex exec -s read-only -C <dir> [-c …] resume <id> --json --output-schema <file> -o <file> "<prompt>"` resumes the thread. `-s` and `-C` belong to `codex exec` itself and must come before `resume`. Verified: the CLI rejects `resume <id> -s read-only` with "unexpected argument".
+- Resuming an unknown UUID fails with "no rollout found". Verified. A thread name or `--last` that matches nothing silently starts a new thread (source-read: `exec/src/lib.rs:1017-1025`), so only UUIDs are safe, and the caller should compare IDs.
+- **Resume restores the conversation only.** Model, reasoning effort, sandbox, approval, cwd, and developer instructions all come from the current invocation (source-read: `exec/src/lib.rs:1386-1412`). A resume without them runs on defaults. `gpt-5.6-sol` defaults to `low` effort in Codex's model list, so a bare resume would quietly lower the reviewer's reasoning.
+
+### 5 and 6. Model and reasoning effort
+
+`model` and `model_reasoning_effort` are ordinary config keys, settable with `-c` on both `exec` and `exec resume`. `gpt-5.6-sol` is in the bundled model list and supports `high`. Verified: the stored session recorded `model: gpt-5.6-sol` and `effort: high`.
+
+### 9. Discovering deep-review
+
+- Skills are discovered from installed plugins, `.agents/skills` and `.codex/skills` in the project, and the user's skill directories.
+- Plugin skills are named `devloop:deep-review` (source-read: `ext/skills/src/loader/namespace.rs`).
+- A `$devloop:deep-review` mention in the prompt injects the full `SKILL.md`, and works in `codex exec` (source-read: `skills/src/mentions.rs`, `ext/skills/src/host_prompt.rs:76-96`).
+- A path-linked mention only disambiguates among discovered skills, so the plugin must be installed.
+
+### 10. Project instructions
+
+In each directory from the repository root down to cwd, the first of `AGENTS.override.md`, `AGENTS.md`, or a configured fallback name loads (source-read: `core/src/agents_md.rs`). `CLAUDE.md` is not a default fallback. The instructions reload on every turn, including after resume.
+
+### 11. Structured output
+
+`--output-schema <file>` sends the schema in strict mode. The API requires `additionalProperties: false` and every property listed as required (source-read: `codex-api/src/common.rs:392-410`). The result is the final agent message's JSON text, also written to the `-o` file. The schema applies per turn, and `exec resume` accepts it.
+
+### Other Codex observations
+
+- `codex exec` defaults to approval `never`. `-s read-only` allows reading the whole filesystem but blocks writes and network (source-read), so `gh` will not work inside a Codex reviewer.
+- Codex reads a piped stdin into the prompt. Verified: it printed "Reading additional input from stdin". A coordinator must close the child's stdin; `claude -p` behaves the same way.
+- No environment variable links a child `codex exec` to a parent Codex session, but a child shares the parent's `CODEX_HOME`, which holds its config and auth (source-read).
+- `codex exec review` is Codex's own review mode. Using it would replace deep-review, so the design does not.
+
+## Design
+
+The pieces map onto the requested separation:
+
+- **deep-review** stays the only statement of how to review. Nothing else restates it.
+- **`agents/reviewer.md`** is the reviewer role, and the one place its settings live:
+  - Claude reads it natively. Its `model: opus` and disallowed edit tools apply.
+  - Codex gets its body as `developer_instructions`, and its `codex:` frontmatter as `-c` settings: `gpt-5.6-sol` at `high` effort.
+  - `claude plugin validate --strict` accepts the extra frontmatter block, and Claude ignores it.
+- **`skills/persistent-review/SKILL.md`** tells the current session how to coordinate: an independent first round, a cross-check of blocking findings, one challenge exchange per dispute, the dispositions, and the outcome rule.
+- **`skills/persistent-review/scripts/reviewer.py`** holds the host mechanics that an agent would otherwise have to reconstruct correctly every round:
+  - the explicit Claude session ID;
+  - Codex's repeated settings and its argument order;
+  - closed stdin;
+  - the ID check on every resume;
+  - the two response schemas. It is Python standard library only.
+
+Session state is one JSON file per host in `<git-dir>/devloop/review/`, holding the session ID and the target label.
+
+- It sits under the git directory, so it is never committed and needs no `.gitignore` entry.
+- Each linked worktree gets its own reviewers.
+- Codex IDs cannot be derived or named, which is why a file exists at all.
+- One file per host lets the two first-round reviews run in parallel without racing on a shared file.
+
+Reviewers see only local evidence. Codex reviewers run read-only and offline, so the Claude reviewer is limited to `git`, `Read`, `Grep`, `Glob`, and `Skill` to keep the two comparable. The coordinator resolves PR targets into local refs and passes the PR body as intent.
+
+### Verified end to end
+
+- **Claude, through the script and an installed plugin.** A first round found the planted bug as blocking. A cross-check confirmed the matching Codex-style finding and downgraded a debatable one with evidence. That is the dispute a challenge round would take back to its originator.
+- **Codex, against a fake `codex`.** The fake emits the real event shapes. The script's create, resume, ID mismatch, turn failure, target mismatch, and missing-session paths all behave as designed. The generated arguments were also accepted by the real CLI.
+
+### Not verified
+
+- **A Codex reviewer answering a real prompt.** This covers applying deep-review, following the role, and resuming with context. It needs OpenAI credentials and network access.
+- **Whether a Codex reviewer keeps the injected skill text in its history after resume.** The script re-invokes deep-review on every review round anyway. Challenge rounds rely on the history.
+- **Running the script from inside a sandboxed Codex coordinator.** The children need network access, and a nested `codex exec` inside a sandbox was not traced.
+- **The full coordinator loop with both hosts live.**
