@@ -171,6 +171,7 @@ Codex's sandbox blocks network by default, so the coordinator resolves PR target
 ### Running a round from a coordinator
 
 Round length and background execution, measured by running persistent-review on its own PR from headless Claude Code coordinators:
+
 - An Opus first round on the roughly 600-line PR took 17.5 minutes.
 - In the foreground, it completed even though the coordinator set a 10-minute shell timeout.
 - Twice, a coordinator ran the round in the background and ended its turn. The headless session exited and killed the reviewer mid-review.
