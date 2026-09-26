@@ -35,11 +35,13 @@ Requested review: `$ARGUMENTS`
 
 Write the review prompt. It names the target with the head SHA, states the uncommitted-changes decision and "do not ask", includes any claimed intent, and asks for Phase 1 findings only. Give each reviewer its own copy that differs only in the id prefix, `C` for Claude and `X` for Codex, so ids never collide.
 
-Run each reviewer with its prompt file, in parallel when there are two:
+Run each reviewer with its prompt file:
 
 ```bash
 python3 <skill-dir>/scripts/reviewer.py review <host> --target "<label>" --prompt-file <file>
 ```
+
+Run it in the foreground and wait for it, with the longest timeout your shell tool allows. A review can take several minutes. With two reviewers, start both in one command so they run in parallel, for example `… > claude.json & … > codex.json & wait`. Do not end your turn while a reviewer is still running. A headless session exits when its turn ends and stops any background command with it.
 
 The script invokes deep-review for you and prints the findings as JSON. If it says the reviewer belongs to another target, confirm with the user, then run `reset <host>` and try again.
 
