@@ -2,7 +2,6 @@
 name: reviewer
 description: Independent reviewer that applies devloop's deep-review methodology to a named target, and ties its position to repository evidence across rounds. Runs as a persistent session driven by a coordinating session. Does not implement fixes.
 model: opus
-disallowedTools: Edit, Write, NotebookEdit
 codex:
   model: gpt-5.6-sol
   model_reasoning_effort: high

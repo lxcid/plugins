@@ -131,7 +131,7 @@ The pieces map onto the requested separation:
 
 - **deep-review** stays the only statement of how to review. Nothing else restates it.
 - **`agents/reviewer.md`** is the reviewer role, and the one place its settings live:
-  - Claude reads it natively. Its `model: opus` and disallowed edit tools apply.
+  - Claude reads it natively, and its `model: opus` applies. It sets no tool restrictions, so permissions come from project config.
   - Codex gets its body as `developer_instructions`, and its `codex:` frontmatter as `-c` settings: `gpt-5.6-sol` at `high` effort.
   - `claude plugin validate --strict` accepts the extra frontmatter block, and Claude ignores it.
 - **`skills/persistent-review/SKILL.md`** tells the current session how to coordinate: an independent first round, a cross-check of blocking findings, one challenge exchange per dispute, the dispositions, and the outcome rule.
@@ -159,7 +159,7 @@ Reviewers run under each host's own permission configuration, so a project decid
 - **Codex.** The script passes no `-s`, so the sandbox comes from the user's or project's Codex config, as for any other Codex session.
   - Running tests needs `workspace-write`.
   - Codex has no mode that runs commands but forbids edits, so a Codex reviewer allowed to run tests relies on its role, not its sandbox, to leave files alone.
-- **Claude file edits.** The agent's disallowed `Edit` and `Write` tools stay in place whatever the settings say.
+- **File edits.** Neither host's reviewer is blocked from editing by devloop. Project config decides, and the role tells reviewers not to edit. Headless Claude denies `Edit` and `Write` unless the settings allow them.
 
 Codex's sandbox blocks network by default, so the coordinator resolves PR targets into local refs and passes the PR body as intent.
 
