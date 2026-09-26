@@ -98,7 +98,10 @@ The binding set is derived, never maintained, and is listed in the order decisio
 awk '/^### /{h=substr($0,5)} /^Binding:/{print FILENAME"\t"h} /^Overturns:/{print FILENAME"\t"h"\t"$0}' docs/pipelines/*/spec.md | sed 's|docs/pipelines/||; s|/spec.md||'
 ```
 
-The list includes every `Overturns:` line, which always appears below the decision it names because pipelines sort by number. A binding decision named by a later `Overturns:` line no longer binds.
+The list is for discovery. It includes every `Overturns:` line, which always appears below the decision it names because pipelines sort by number. It does not show which decisions are still proposed, so read each listed decision before applying it.
+
+- A binding decision stops binding once a later decision that overturns it is approved. A proposed reversal leaves it in force.
+- A proposed binding decision is followed as if approved until the operator decides. Obeying a constraint that is later dropped costs less than breaking one that is later approved.
 
 ### `plan.md` - when the build is more than a couple of steps
 
