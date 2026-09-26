@@ -9,7 +9,7 @@ One [plugin package](plugins/devloop/) is shared by Claude Code and Codex. The r
 - `.claude-plugin/marketplace.json` for Claude Code.
 - `.agents/plugins/marketplace.json` for Codex.
 
-Both catalogs currently list `devloop` at `./plugins/devloop`; additional public plugins can be added under `plugins/<name>/` and listed in both catalogs. Version `0.4.0` includes the `start-work`, `deep-review`, and `adopt` skills. Each application manages its own installed copy; installing, updating, or removing it in one application does not change the other.
+Both catalogs currently list `devloop` at `./plugins/devloop`; additional public plugins can be added under `plugins/<name>/` and listed in both catalogs. Version `0.4.0` includes the `start-work`, `deep-review`, `persistent-review`, and `adopt` skills. Each application manages its own installed copy; installing, updating, or removing it in one application does not change the other.
 
 ### Start implementation work
 
@@ -22,6 +22,12 @@ The skill checks the request against current code and recent decisions, resolves
 After installing, invoke `/devloop:deep-review 123` in Claude Code, or ask Codex to “Use devloop's deep-review skill to review PR 123.” A PR URL, an explicit file or commit range, or the current branch also works.
 
 The skill reviews correctness and whether each change earns its place, then proposes minimal fixes without editing files. GitHub PR discovery and patch retrieval require the `gh` CLI authenticated to the repository. See the [package README](plugins/devloop/README.md) for details.
+
+### Run a persistent cross-model review
+
+After installing in each host you want to use, invoke `/devloop:persistent-review claude and codex, branch feature against main` in Claude Code. In Codex, ask it to “Use devloop's persistent-review skill to review this branch with Claude and Codex.” One reviewer also works.
+
+The current session coordinates. It starts reviewer sessions that apply `deep-review` independently, cross-checks their blocking findings, and challenges disputed ones on evidence. It returns `PASS`, `BLOCKED`, or `NEEDS_HUMAN`. The same sessions are resumed after fixes. See the [package README](plugins/devloop/README.md) for requirements.
 
 ### Adopt engineering patterns
 
