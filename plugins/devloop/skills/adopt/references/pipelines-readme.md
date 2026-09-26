@@ -70,7 +70,7 @@ Skip it when the work holds no decision worth recording. A spec written to make 
 
 The operator and the builder both take decisions. A decision the operator sets steers the implementation without prescribing the plan. The builder adds decisions as investigation turns them up. When the operator settles something in conversation, the builder writes it into the spec, so the operator does not have to maintain the file by hand.
 
-A decision is approved once the operator has written it or accepted it in review. Until then, the builder may revise its own decisions freely. Reversing or materially changing an approved decision goes back to the operator.
+A decision the builder takes carries the line `Proposed: awaiting operator approval.` under its heading, and the builder may revise it freely. When the operator approves it, in review or in conversation, the builder removes the line, so the commit records the approval. A decision the operator set is written without the line. A decision without the line is approved, and reversing or materially changing it goes back to the operator.
 
 Questions the builder raises during the build are not added to the intent. When the question is how to do the work, and every plausible answer stays within the intent and the approved decisions, the builder answers it as its own decision. When it is about what the work is, the builder stops and asks the operator, and the answer becomes a decision.
 
@@ -112,7 +112,7 @@ status: in-progress
 ---
 ```
 
-Frontmatter holds document metadata, so only fields describing the pipeline as a whole belong there. `Binding:` stays inline beside the decision it qualifies, because it describes one decision rather than the spec that contains it. Lifting it into frontmatter would create a document-level list that restates what the body already says, and the two would drift.
+Frontmatter holds document metadata, so only fields describing the pipeline as a whole belong there. `Binding:` and `Proposed:` stay inline beside the decision they qualify, because each describes one decision rather than the spec that contains it. Lifting them into frontmatter would create a document-level list that restates what the body already says, and the two would drift.
 
 | `status`      | Meaning                                         |
 | ------------- | ----------------------------------------------- |
@@ -157,7 +157,7 @@ The loop revises the plan, never the intent.
 
 ## Closing a pipeline
 
-A pipeline is `done` when the outcome stated in its intent is true and verified. It is not done because the code merged or because the plan ran out of steps. The builder verifies, and the operator confirms. The plan records what was verified and by which command, or the handoff does when there is no plan. Anything deliberately deferred is named in the spec together with the condition that would bring it back. Deferring part of the proposed outcome changes the intent, so it goes to the operator.
+A pipeline is `done` when the outcome stated in its intent is true and verified. It is not done because the code merged or because the plan ran out of steps. Nor is it done while any decision in its spec is still proposed. The builder verifies, and the operator confirms. The plan records what was verified and by which command, or the handoff does when there is no plan. Anything deliberately deferred is named in the spec together with the condition that would bring it back. Deferring part of the proposed outcome changes the intent, so it goes to the operator.
 
 Findings from operating the system open a new pipeline. Closed pipelines stay closed.
 
