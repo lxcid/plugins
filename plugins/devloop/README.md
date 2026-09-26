@@ -2,7 +2,7 @@
 
 Devloop aims to adapt [Anthropic's AI-native SDLC playbook](https://claude.com/blog/the-ai-native-sdlc-playbook) to its own workflow, with committed intent, specification, and planning artifacts. The `adopt` skill can install that pipeline process into a project. The other skills focus on GitHub and honor each project's conventions.
 
-Shared plugin package for Claude Code and Codex. Version `0.4.0` includes `start-work`, `deep-review`, `persistent-review`, and `adopt`, plus a `reviewer` agent; intent stage automation and hooks are not implemented yet.
+Shared plugin package for Claude Code and Codex. Version `0.5.0` includes `start-work`, `deep-review`, `persistent-review`, and `adopt`, plus a `reviewer` agent; intent stage automation and hooks are not implemented yet.
 
 ## Start work
 

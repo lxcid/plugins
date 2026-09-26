@@ -9,7 +9,7 @@ One [plugin package](plugins/devloop/) is shared by Claude Code and Codex. The r
 - `.claude-plugin/marketplace.json` for Claude Code.
 - `.agents/plugins/marketplace.json` for Codex.
 
-Both catalogs currently list `devloop` at `./plugins/devloop`; additional public plugins can be added under `plugins/<name>/` and listed in both catalogs. Version `0.4.0` includes the `start-work`, `deep-review`, `persistent-review`, and `adopt` skills. Each application manages its own installed copy; installing, updating, or removing it in one application does not change the other.
+Both catalogs currently list `devloop` at `./plugins/devloop`; additional public plugins can be added under `plugins/<name>/` and listed in both catalogs. Version `0.5.0` includes the `start-work`, `deep-review`, `persistent-review`, and `adopt` skills. Each application manages its own installed copy; installing, updating, or removing it in one application does not change the other.
 
 ### Start implementation work
 
