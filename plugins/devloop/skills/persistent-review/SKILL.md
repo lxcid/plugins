@@ -43,10 +43,7 @@ Run each reviewer with its prompt file:
 python3 <skill-dir>/scripts/reviewer.py review <host> --target "<label>" --prompt-file <file>
 ```
 
-Wait for every round to finish before ending your turn. A headless session exits when its turn ends and stops any background command with it. A review can take longer than a shell tool's timeout allows:
-
-- In the foreground, give the command the longest timeout your shell tool allows.
-- In an interactive session, you may run it in the background instead and wait for its completion notice.
+Run it in the foreground, with the longest timeout your shell tool allows, and wait for it. Do not run it in the background, even though a round can take many minutes. A headless session exits when its turn ends and stops any background command with it.
 
 With two reviewers, run them in parallel and check each exit status. A bare `wait` reports success even when a reviewer failed:
 
