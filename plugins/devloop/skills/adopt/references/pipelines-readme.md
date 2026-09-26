@@ -76,7 +76,7 @@ Questions the builder raises during the build are not added to the intent. When 
 
 The operator may also state preferences: approaches the operator leans towards but has not decided. List them under a `## Preferences` heading above the decisions. The builder may depart from a preference with good reason, and records the departure as a decision that names the preference and the evidence against it. A preference the builder must not depart from is a decision, and belongs with the decisions.
 
-Every decision belongs to the pipeline that made it. There is no separate decision tree; a decision lives in exactly one spec, and a later pipeline that overturns one says so and links back.
+Every decision belongs to the pipeline that made it. There is no separate decision tree; a decision lives in exactly one spec. A later pipeline that overturns one says so with an `Overturns:` line under its own decision's heading, naming the pipeline number and the decision, such as `Overturns: 00001 D2`. Overturning another pipeline's decision goes to the operator.
 
 Some decisions constrain work beyond their own pipeline. Mark those with a `Binding:` line naming who has to obey, directly under the heading:
 
@@ -95,8 +95,10 @@ A binding decision states plainly what counts as a violation, and carries a `Wha
 The binding set is derived, never maintained, and is listed in the order decisions appear:
 
 ```bash
-awk '/^### /{h=substr($0,5)} /^Binding:/{print FILENAME"\t"h}' docs/pipelines/*/spec.md | sed 's|docs/pipelines/||; s|/spec.md||'
+awk '/^### /{h=substr($0,5)} /^Binding:/{print FILENAME"\t"h} /^Overturns:/{print FILENAME"\t"h"\t"$0}' docs/pipelines/*/spec.md | sed 's|docs/pipelines/||; s|/spec.md||'
 ```
+
+The list includes every `Overturns:` line, which always appears below the decision it names because pipelines sort by number. A binding decision named by a later `Overturns:` line no longer binds.
 
 ### `plan.md` - when the build is more than a couple of steps
 
@@ -112,7 +114,7 @@ status: in-progress
 ---
 ```
 
-Frontmatter holds document metadata, so only fields describing the pipeline as a whole belong there. `Binding:` and `Proposed:` stay inline beside the decision they qualify, because each describes one decision rather than the spec that contains it. Lifting them into frontmatter would create a document-level list that restates what the body already says, and the two would drift.
+Frontmatter holds document metadata, so only fields describing the pipeline as a whole belong there. `Binding:`, `Proposed:`, and `Overturns:` stay inline beside the decision they qualify, because each describes one decision rather than the spec that contains it. Lifting them into frontmatter would create a document-level list that restates what the body already says, and the two would drift.
 
 | `status`      | Meaning                                         |
 | ------------- | ----------------------------------------------- |
