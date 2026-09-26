@@ -60,6 +60,8 @@ An agent may draft it. The operator approves it. Approval is the gate: no spec, 
 
 Frontmatter carries `status` and nothing else. Sections: Problem, Proposed outcome, Affected users and systems, Constraints, Open questions. The proposed outcome says how to tell when the outcome is true, because that is what the build is verified against. Constraints include anything the operator rules out of scope.
 
+Open questions stay in the intent as written. They record what was unknown at approval, so they are not struck out once answered. Every one is answered before the builder hands off for acceptance, by a decision in the spec that names the question. "Out of scope here" and "deferred until X" are answers. If an answer changes the proposed outcome or the constraints, the operator changes those sections as well.
+
 ### `spec.md` - when there are decisions
 
 What was decided and why. One numbered decision at a time, each carrying its own reasoning, so a later reader can overturn one without unpicking the rest.
@@ -69,6 +71,8 @@ Skip it when the work holds no decision worth recording. A spec written to make 
 The operator and the builder both take decisions. A decision the operator sets steers the implementation without prescribing the plan. The builder adds decisions as investigation turns them up. When the operator settles something in conversation, the builder writes it into the spec, so the operator does not have to maintain the file by hand.
 
 A decision is approved once the operator has written it or accepted it in review. Until then, the builder may revise its own decisions freely. Reversing or materially changing an approved decision goes back to the operator.
+
+Questions the builder raises during the build are not added to the intent. When the question is how to do the work, and every plausible answer stays within the intent and the approved decisions, the builder answers it as its own decision. When it is about what the work is, the builder stops and asks the operator, and the answer becomes a decision.
 
 The operator may also state preferences: approaches the operator leans towards but has not decided. List them under a `## Preferences` heading above the decisions. The builder may depart from a preference with good reason, and records the departure as a decision that names the preference and the evidence against it. A preference the builder must not depart from is a decision, and belongs with the decisions.
 
