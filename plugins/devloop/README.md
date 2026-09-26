@@ -1,8 +1,8 @@
 # devloop
 
-Devloop aims to adapt [Anthropic's AI-native SDLC playbook](https://claude.com/blog/the-ai-native-sdlc-playbook) to its own workflow, with committed intent, specification, and planning artifacts over time. Today, its skills focus on GitHub and honor each project's conventions.
+Devloop aims to adapt [Anthropic's AI-native SDLC playbook](https://claude.com/blog/the-ai-native-sdlc-playbook) to its own workflow, with committed intent, specification, and planning artifacts. The `adopt` skill can install that pipeline process into a project. The other skills focus on GitHub and honor each project's conventions.
 
-Shared plugin package for Claude Code and Codex. Version `0.3.0` includes `start-work`, `deep-review`, and `adopt`; intent stage automation, hooks, and agents are not implemented yet.
+Shared plugin package for Claude Code and Codex. Version `0.4.0` includes `start-work`, `deep-review`, and `adopt`; intent stage automation, hooks, and agents are not implemented yet.
 
 ## Start work
 
@@ -32,12 +32,19 @@ The skill adapts the original personal `deep-review` instructions for a shared p
 
 ## Adopt patterns
 
-The [adopt skill](skills/adopt/SKILL.md) installs devloop's engineering patterns into a project's `AGENTS.md` and keeps them current when re-run. Each pattern is a stance rather than a repository fact, so it transfers as written and needs no knowledge of the target project.
+The [adopt skill](skills/adopt/SKILL.md) installs devloop's engineering patterns into a project's `AGENTS.md`, and can set up its pipeline process. It keeps both current when re-run. Each pattern transfers as written and needs no knowledge of the target project.
 
-- Claude Code: `/devloop:adopt design-judgment`, `/devloop:adopt all`, or `/devloop:adopt` to choose from the catalog.
+- Claude Code: `/devloop:adopt design-judgment`, `/devloop:adopt all`, `/devloop:adopt pipelines`, or `/devloop:adopt` to choose from the catalog.
 - Codex: ask “Use devloop's adopt skill to install the design-judgment pattern.”
 
-The catalog is `design-judgment`, `debugging-discipline`, `test-design`, `writing-style`, `commit-conventions`, and `handoff-contract`. Each lives in its own file under [skills/adopt/references/](skills/adopt/references/): the frontmatter holds its id and version, and everything below the frontmatter is the exact text installed into `AGENTS.md`. Edit a reference file to change what a pattern says, and raise its `version` so existing adopters pick up the change.
+The catalog holds six stances: `design-judgment`, `debugging-discipline`, `test-design`, `writing-style`, `commit-conventions`, and `handoff-contract`. It also holds one process, `pipelines`. Each pattern lives under [skills/adopt/references/](skills/adopt/references/). A reference file's frontmatter holds its id, version, and optional target file, which defaults to `AGENTS.md`. Everything below the frontmatter is the exact text installed. Edit a reference file to change what a pattern says, and raise its `version` so existing adopters pick up the change.
+
+`pipelines` organises work as numbered `docs/pipelines/` directories, each holding an intent, a spec, and a plan. The operator owns the intent and its acceptance, the builder owns the plan, and the spec is shared. The pattern installs two sections:
+
+- The process itself, as `docs/pipelines/README.md`.
+- A `## Pipelines` section in `AGENTS.md` that sends agents to that README.
+
+`all` leaves `pipelines` out. Its `AGENTS.md` section tells agents to work only through approved intents, so installing it commits the project to the process. Name it to adopt it.
 
 Installed sections are delimited by HTML comment markers recording the pattern's version and a hash of the upstream text the section was written from. That hash is a baseline rather than a checksum of whatever is currently there: a body still matching it is untouched plugin content and can be replaced, and anything else is yours — whether you merged it in when adopting or edited it afterwards. On re-run an untouched section on an older version updates in place, a customized one stops and asks first, and a current one is left alone. Nothing outside the markers is modified, and the skill never reformats the file around them.
 
@@ -65,4 +72,4 @@ Keep the name, version, description, author, homepage, and repository identical 
 
 Add shared workflow content under this directory as it is implemented: `skills/<name>/SKILL.md`, `templates/`, and `scripts/`. Keep packaged resources within this directory so they remain available after either host installs its own copy. Add host-specific hook and agent configuration only when implemented and verified in that host.
 
-Both repository marketplace catalogs point here. Each host manages its own installation, settings, and updates. Downstream plans and artifacts belong in the target project's repository and PRs, outside the installed plugin. `start-work` defaults to the draft PR description for medium, large, or multi-session plans and follows existing project conventions for alternative planning artifacts; it does not require a `docs/intents/` directory.
+Both repository marketplace catalogs point here. Each host manages its own installation, settings, and updates. Downstream plans and artifacts belong in the target project's repository and PRs, outside the installed plugin. `start-work` defaults to the draft PR description for medium, large, or multi-session plans and follows existing project conventions for alternative planning artifacts; it does not require a `docs/pipelines/` directory.

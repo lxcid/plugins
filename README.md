@@ -9,7 +9,7 @@ One [plugin package](plugins/devloop/) is shared by Claude Code and Codex. The r
 - `.claude-plugin/marketplace.json` for Claude Code.
 - `.agents/plugins/marketplace.json` for Codex.
 
-Both catalogs currently list `devloop` at `./plugins/devloop`; additional public plugins can be added under `plugins/<name>/` and listed in both catalogs. Version `0.3.0` includes the `start-work`, `deep-review`, and `adopt` skills. Each application manages its own installed copy; installing, updating, or removing it in one application does not change the other.
+Both catalogs currently list `devloop` at `./plugins/devloop`; additional public plugins can be added under `plugins/<name>/` and listed in both catalogs. Version `0.4.0` includes the `start-work`, `deep-review`, and `adopt` skills. Each application manages its own installed copy; installing, updating, or removing it in one application does not change the other.
 
 ### Start implementation work
 
@@ -27,7 +27,7 @@ The skill reviews correctness and whether each change earns its place, then prop
 
 After installing, invoke `/devloop:adopt all` in Claude Code, or ask Codex to “Use devloop's adopt skill to install its engineering patterns.” A single pattern id also works, and no argument lists the catalog.
 
-The skill copies stance sections — design judgment, debugging discipline, test design, writing style, commit conventions, and the handoff contract — into the project's `AGENTS.md`, each marked with its version so a later run can update it without overwriting local edits. See the [package README](plugins/devloop/README.md) for the catalog and the update rules.
+The skill copies stance sections — design judgment, debugging discipline, test design, writing style, commit conventions, and the handoff contract — into the project's `AGENTS.md`, each marked with its version so a later run can update it without overwriting local edits. `/devloop:adopt pipelines` sets up the pipeline process: numbered `docs/pipelines/` directories holding an intent, a spec, and a plan. It installs the process as `docs/pipelines/README.md` and points agents to it from `AGENTS.md`. `all` leaves it out. See the [package README](plugins/devloop/README.md) for the catalog and the update rules.
 
 ### Install from GitHub
 
