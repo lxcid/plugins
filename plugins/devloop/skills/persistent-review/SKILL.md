@@ -43,7 +43,20 @@ Run each reviewer with its prompt file:
 python3 <skill-dir>/scripts/reviewer.py review <host> --target "<label>" --prompt-file <file>
 ```
 
-Run it in the foreground and wait for it, with the longest timeout your shell tool allows. A review can take several minutes. With two reviewers, start both in one command so they run in parallel, for example `… > claude.json & … > codex.json & wait`. Do not end your turn while a reviewer is still running. A headless session exits when its turn ends and stops any background command with it.
+Wait for every round to finish before ending your turn. A headless session exits when its turn ends and stops any background command with it. A review can take longer than a shell tool's timeout allows:
+
+- In the foreground, give the command the longest timeout your shell tool allows.
+- In an interactive session, you may run it in the background instead and wait for its completion notice.
+
+With two reviewers, run them in parallel and check each exit status. A bare `wait` reports success even when a reviewer failed:
+
+```bash
+python3 <skill-dir>/scripts/reviewer.py review claude … > claude.json & c=$!
+python3 <skill-dir>/scripts/reviewer.py review codex … > codex.json & x=$!
+wait $c; echo "claude exit $?"; wait $x; echo "codex exit $?"
+```
+
+A non-zero exit means that reviewer failed, and its error is on stderr. Handle it as described under Failure.
 
 The script invokes deep-review for you and prints the findings as JSON. If it says the reviewer belongs to another target, confirm with the user, then run `reset <host>` and try again.
 
@@ -62,7 +75,7 @@ python3 <skill-dir>/scripts/reviewer.py respond <host> --prompt-file <file>
 Ask it to inspect the evidence itself and answer each finding with `confirm`, `revise`, `downgrade`, or `withdraw`. A reviewer's own finding that matches one it is shown counts as a confirmation.
 
 - `confirm`, or `revise` that stays blocking: the finding is CONFIRMED.
-- `downgrade` or `withdraw`: the finding is disputed. Go to step 4.
+- `downgrade`, `withdraw`, or `revise` to non-blocking: the finding is disputed. Go to step 4.
 
 ## 4. Challenge
 
