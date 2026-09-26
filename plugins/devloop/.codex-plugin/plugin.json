@@ -1,6 +1,6 @@
 {
   "name": "devloop",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "AI-native SDLC loop as committed artifacts, for coding agents.",
   "author": {
     "name": "lxcid",
@@ -11,7 +11,7 @@
   "interface": {
     "displayName": "devloop",
     "shortDescription": "AI-native SDLC as committed artifacts.",
-    "longDescription": "Shared development workflow skills for Claude Code and Codex. Start work resolves an issue or task, prepares a branch and plan, and begins implementation. Deep review examines PRs and branches for correctness and accidental complexity, then proposes minimal fixes without editing files. Adopt installs devloop's engineering patterns into a project's AGENTS.md, can set up its intent, spec, and plan pipeline process, and keeps both current on re-run.",
+    "longDescription": "Shared development workflow skills for Claude Code and Codex. Start work resolves an issue or task, prepares a branch and plan, and begins implementation. Deep review examines PRs and branches for correctness and accidental complexity, then proposes minimal fixes without editing files. Persistent review coordinates independent Claude and Codex reviewer sessions, reconciles their findings on evidence, and resumes the same reviewers after fixes. Adopt installs devloop's engineering patterns into a project's AGENTS.md, can set up its intent, spec, and plan pipeline process, and keeps both current on re-run.",
     "developerName": "lxcid",
     "category": "Productivity",
     "capabilities": ["Read", "Write"],
@@ -19,6 +19,7 @@
     "defaultPrompt": [
       "Use start-work to begin implementing a task.",
       "Use deep-review to review the current branch.",
+      "Use persistent-review to review this branch with Claude and Codex.",
       "Use adopt to install devloop's engineering patterns into this project."
     ]
   },

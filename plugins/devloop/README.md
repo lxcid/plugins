@@ -2,7 +2,7 @@
 
 Devloop aims to adapt [Anthropic's AI-native SDLC playbook](https://claude.com/blog/the-ai-native-sdlc-playbook) to its own workflow, with committed intent, specification, and planning artifacts. The `adopt` skill can install that pipeline process into a project. The other skills focus on GitHub and honor each project's conventions.
 
-Shared plugin package for Claude Code and Codex. Version `0.4.0` includes `start-work`, `deep-review`, and `adopt`; intent stage automation, hooks, and agents are not implemented yet.
+Shared plugin package for Claude Code and Codex. Version `0.5.0` includes `start-work`, `deep-review`, `persistent-review`, and `adopt`, plus a `reviewer` agent; intent stage automation and hooks are not implemented yet.
 
 ## Start work
 
@@ -29,6 +29,35 @@ If the target is missing or ambiguous, the skill first asks whether to continue 
 Run in a Git checkout. GitHub PR lookup and diff retrieval use the GitHub CLI (`gh`) and require authentication with access to the repository. Explicit paths and commit ranges can be reviewed directly without GitHub PR discovery.
 
 The skill adapts the original personal `deep-review` instructions for a shared package. It does not require devloop intent artifacts or a separate reviewer agent.
+
+## Persistent review
+
+The [persistent-review skill](skills/persistent-review/SKILL.md) makes the current session a coordinator of independent reviewers in Claude Code, Codex, or both. Each reviewer is a persistent session of the [reviewer agent](agents/reviewer.md) applying `deep-review`. The same sessions are resumed for every round, and the skill returns `PASS`, `BLOCKED`, or `NEEDS_HUMAN`.
+
+- Claude Code: `/devloop:persistent-review claude and codex, branch feature against main`.
+- Codex: ask “Use devloop's persistent-review skill to review this branch with Claude and Codex.”
+
+Rounds run in this order:
+
+1. The reviewers review independently. Neither sees the other's findings until both finish.
+2. Each reviewer cross-checks the other's blocking findings on the evidence.
+3. A disputed finding goes back to its reviewer once, with the objection.
+
+Findings end as confirmed, withdrawn, non-blocking, or unresolved. Unresolved disagreements go to the operator. The skill never settles them by vote. After fixes, the same reviewers are resumed to review the current state again.
+
+- **Claude reviewer:** runs on Opus.
+- **Codex reviewer:** runs on GPT-5.6 Sol at high reasoning effort.
+- **Where settings live:** both sets of settings live in the agent file, not in `deep-review`.
+- **Session state:** stored per worktree under the Git directory, so it is never committed.
+- **Permissions:** reviewers reuse each host's own settings, and devloop grants nothing extra.
+  - For Claude, the project's settings must allow `Bash(git *)`, plus the test command if reviewers should run tests.
+  - For Codex, running tests needs a writable sandbox.
+
+Run in the target Git checkout. Requirements:
+
+- Each requested host's CLI is installed and authenticated, and devloop is installed in that host.
+- The coordinator can run the bundled Python 3 script with network access.
+- Claude reviewers read `AGENTS.md` only when there is no `CLAUDE.md`. If a project has both, `CLAUDE.md` should link to or import `AGENTS.md`.
 
 ## Adopt patterns
 
@@ -67,6 +96,7 @@ Run in the target project's Git checkout. No GitHub access is required.
 - `plugin.json`: portable Agent Plugins manifest and canonical package identity.
 - `.claude-plugin/plugin.json`: Claude Code manifest.
 - `.codex-plugin/plugin.json`: Codex compatibility manifest and display metadata. The portable manifest intentionally omits `extensions.com.openai` so this file supplies the OpenAI-specific settings.
+- `agents/reviewer.md`: the reviewer role. Claude Code loads it as a plugin agent. Codex has no plugin agents, so `persistent-review` passes its body and its `codex:` settings to `codex exec`.
 
 Keep the name, version, description, author, homepage, and repository identical across all three manifests. Bump all three versions together when releasing changes. The repository's root `package.json` describes development tooling, not the installable plugin.
 
