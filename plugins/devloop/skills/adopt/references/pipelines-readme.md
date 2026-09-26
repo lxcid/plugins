@@ -168,6 +168,10 @@ Findings from operating the system open a new pipeline. Closed pipelines stay cl
 
 - **Separate originator, product owner, engineer, and release manager roles.** There is one operator. Role-based gates collapse into a single approval gate held by the operator.
 - **A spec and a plan by default.** Three documents before the first line of code is right for work carrying real risk and wrong for most work. The intent is required; the spec and plan are written when they earn it.
+- **A requirements and design spec.** The playbook's spec restates the intent as requirements, then adds the design. Here the intent's proposed outcome and constraints are the requirements, and the spec holds only decisions. Restating the requirements would put a second copy of operator-owned content in a shared file.
+- **A logged prompt and skill versions beside the spec.** The playbook generates the spec in one prompted session. Here the spec grows one decision at a time, and each decision carries its own reasoning, so there is no single prompt to log.
+- **Proof in the plan.** The playbook's plan says how the work will be proved. Here the intent's proposed outcome says how to tell when it is true, and the plan records only how that was verified. A builder that owned the completion condition could redefine done to match what it built.
+- **A risks section in the plan.** A risk that shapes the build becomes a decision in the spec, where it carries its reasoning and can be marked binding.
 - **Design and Build as separate stages with separate approvals.** Here they are one conversation. The gates are on the intent going in and the verification coming out.
 - **A shared `/intent/` folder holding intents apart from their work.** Splitting one unit of work across two trees makes a reader reassemble it. One directory holds the whole pipeline.
 - **Autonomous maintenance loops that act on detected breaches.** An agent acting on its own detection needs a control band, and setting one takes operating data this process does not assume. Detection can come later; autonomous action is not adopted.
