@@ -64,11 +64,11 @@ A managed section is delimited by markers recording its id, version, and a basel
 
 That distinction is the whole safety mechanism. Never re-hash a body to make it match; the mismatch is the signal.
 
-Compute the installed body's hash with the same trim and digest used for the baseline in Phase 4:
+Compute the installed body's hash with the same trim and digest used for the baseline in Phase 4. The awk program spells the current line `$(0)`, because Claude Code replaces a dollar sign followed by a digit with the skill's arguments:
 
 ```bash
 # installed body
-awk -v id=design-judgment '$0 ~ "^<!-- devloop:" id " "{f=1;next} $0 ~ "^<!-- /devloop:" id " -->$"{f=0} f' AGENTS.md | perl -0777 -pe 's/\A\s+|\s+\z//g' | shasum -a 256 | cut -c1-8
+awk -v id=design-judgment '$(0) ~ "^<!-- devloop:" id " "{f=1;next} $(0) ~ "^<!-- /devloop:" id " -->$"{f=0} f' AGENTS.md | perl -0777 -pe 's/\A\s+|\s+\z//g' | shasum -a 256 | cut -c1-8
 ```
 
 Then act on the pair — recorded version against the reference version, installed body against the recorded baseline:
